@@ -1,0 +1,111 @@
+<template>
+<div class="tabbar" ref="tabbar" @click="selectTab">
+  <router-link tag="div" class="item" to="/Chat">
+    <i class="active"></i>
+    <span class="active">聊天</span>
+  </router-link>
+  <router-link tag="div" class="item" to="/ContactPerson">
+    <i></i>
+    <span>联系人</span>
+  </router-link>
+  <router-link tag="div" class="item" to="/Moments">
+    <i></i>
+    <span>圈子</span>
+  </router-link>
+  <router-link tag="div" class="item" to="/Mine">
+    <i></i>
+    <span>我的</span>
+  </router-link>
+</div>
+</template>
+
+<script>
+export default {
+  name: 'TabBar',
+  data () {
+    return {}
+  },
+  methods: {
+    selectTab (el) {
+      console.log(el.target)
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+.tabbar{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+  /*background: yellowgreen;*/
+  background: #eee;
+  display: flex;
+  justify-content: space-around;
+  .item{
+    i{
+      display:block;
+      width: 50px;
+      height: 50px;
+      margin: 10px auto;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    span{
+      text-align: center;
+      font-size: 25px;
+      color: #333;
+    }
+    &:nth-child(1){
+      i{
+        background-image:url("../assets/images/Chat.png");
+      }
+    }
+    &:nth-child(2){
+      i{
+        background-image:url("../assets/images/ContactPerson.png");
+      }
+    }
+    &:nth-child(3){
+      i{
+        background-image:url("../assets/images/Moments.png");
+      }
+    }
+    &:nth-child(4){
+      i{
+        background-image:url("../assets/images/Mine.png");
+      }
+    }
+
+    &.router-link-active{
+      &:nth-child(1){
+        i{
+          background-image:url("../assets/images/Chat_active.png");
+        }
+      }
+      &:nth-child(2){
+        i{
+          background-image:url("../assets/images/ContactPerson_active.png");
+        }
+      }
+      &:nth-child(3){
+        i{
+          background-image:url("../assets/images/Moments_active.png");
+        }
+      }
+      &:nth-child(4){
+        i{
+          background-image:url("../assets/images/Mine_active.png");
+        }
+      }
+      span{
+        color: #1082FF;
+      }
+    }
+  }
+}
+</style>
