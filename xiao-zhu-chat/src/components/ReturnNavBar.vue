@@ -4,14 +4,25 @@
         <div class="back" @click="$router.go(-1)"></div>
         <div class="title">{{title}}</div>
       </div>
-      <div class="more"></div>
+      <div class="more" v-show="moreBtnShow"></div>
     </div>
 </template>
 
 <script>
 export default {
   name: 'ReturnNavBar',
-  props: ['title']
+  props: {
+    title: {
+      type: String,
+      default: '',
+      require: false
+    },
+    moreBtnShow: {
+      type: Boolean,
+      default: true,
+      require: false
+    }
+  }
 }
 </script>
 
