@@ -1,8 +1,8 @@
 <template>
-<div class="tabbar" ref="tabbar" @click="selectTab">
+<div class="tabbar">
   <router-link tag="div" class="item" to="/Chat">
-    <i class="active"></i>
-    <span class="active">聊天</span>
+    <i></i>
+    <span>聊天</span>
   </router-link>
   <router-link tag="div" class="item" to="/ContactPerson">
     <i></i>
@@ -21,15 +21,7 @@
 
 <script>
 export default {
-  name: 'TabBar',
-  data () {
-    return {}
-  },
-  methods: {
-    selectTab (el) {
-      console.log(el.target)
-    }
-  }
+  name: 'TabBar'
 }
 </script>
 
@@ -39,13 +31,14 @@ export default {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 120px;
+  height: 110px;
   padding-top: 10px;
   border-top: 1px solid #ccc;
   /*background: yellowgreen;*/
   background: #eee;
   display: flex;
   justify-content: space-around;
+  z-index: 999;
   .item{
     i{
       display:block;
