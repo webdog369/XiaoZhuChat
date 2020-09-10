@@ -6,7 +6,7 @@
             :chatList="chatList"
           ></ChatBubble>
         <div class="input-box">
-             <input type="text" v-model="value" @keydown="enterMsg">
+             <input type="text" v-model="value" @keydown.enter="enterMsg">
           <div class="more"></div>
         </div>
       </div>
@@ -89,21 +89,19 @@ export default {
   },
   methods: {
     enterMsg (key) {
-      if (key.key === 'Enter') {
-        console.log('消息: ' + key.target.value + ' 发送成功')
-        if (key.target.value !== '') {
-          const obj = {
-            name: '二向箔',
-            userId: '001',
-            picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
-            say: key.target.value,
-            time: '20:58',
-            tag: 'MY_MSG'
-          }
-          this.chatList.push(obj)
+      console.log('消息: ' + key.target.value + ' 发送成功')
+      if (key.target.value !== '') {
+        const obj = {
+          name: '二向箔',
+          userId: '001',
+          picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
+          say: key.target.value,
+          time: '20:58',
+          tag: 'MY_MSG'
         }
-        this.value = ''
+        this.chatList.push(obj)
       }
+      this.value = ''
     }
   }
 }

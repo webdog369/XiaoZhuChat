@@ -17,11 +17,11 @@
         <div class="userData">
           <div class="userName">
             <i></i>
-            <input type="text">
+            <input type="text" ref="userName">
           </div>
           <div class="password">
             <i></i>
-            <input :type="psdShow?'text':'password'">
+            <input :type="psdShow?'text':'password'" ref="password">
             <span
               @click="showPsw"
               :class="{'hidden':psdShow}"
@@ -29,7 +29,7 @@
           </div>
         </div>
         <div class="verification_code">
-          <div class="slide_bar" ref="slideBar">
+          <div :class="['slide_bar',VcSuccess?'successMask':'']" ref="slideBar">
             向右滑动验证
             <div class="slideBg" ref="slideBg"></div>
             <div class="slide_btn"
@@ -39,13 +39,15 @@
             ></div>
           </div>
         </div>
-        <div class="signInBtn">登录</div>
-        <div class="signUpBtn">注册</div>
+        <button class="signInBtn" @click="userSign('登录')">登录</button>
+        <button class="signUpBtn" @click="userSign('注册')">注册</button>
       </div>
     </div>
 </template>
 
 <script>
+import { signUp, signIn } from '../api/index'
+import { mapActions } from 'vuex'
 export default {
   name: 'SignUp',
   mounted () {
@@ -59,10 +61,16 @@ export default {
       touchStartX: 0,
       slideBarWidth: 0,
       startTime: 0,
-      endTime: 0
+      endTime: 0,
+      VcSuccess: false,
+      tips: [],
+      canSubmit: false
     }
   },
   methods: {
+    ...mapActions([
+      'setTips'
+    ]),
     changeSex () {
       this.girl = !this.girl
     },
@@ -107,7 +115,42 @@ export default {
         // 提示用户相关信息
         this.$refs.slideBg.style.width = this.slideBarWidth + 'px'
         this.$refs.slideBg.innerHTML = `完美~只用了${time}s`
-        console.log(el.target)
+        // 添加防止用户再次操作的透明遮罩
+        this.VcSuccess = true
+      }
+    },
+    userSign (type) {
+      const userName = this.$refs.userName.value
+      const password = this.$refs.password.value
+      const userSex = this.girl ? 'girl' : 'boy'
+      const obj = {
+        userName: userName,
+        password: password,
+        userSex: userSex
+      }
+      if (userName === '') {
+        this.setTips('用户名不能为空!')
+      } else if (userName !== '' && password === '') {
+        this.setTips('请输入密码!')
+      } else if (password.length < 6) {
+        this.setTips('密码不能小于6位,请重新输入!')
+      } else if (!this.VcSuccess) {
+        this.setTips('请完成滑动验证!')
+      } else {
+        this.canSubmit = true
+      }
+      const flag = this.canSubmit && this.VcSuccess
+      if (flag && type === '注册') {
+        signUp(obj).then(data => {
+          this.setTips(data.data.msg)
+          this.$refs.userName.value = ''
+          this.$refs.password.value = ''
+        })
+      } else if (flag && type === '登录') {
+        signIn(obj).then(data => {
+          this.setTips(data.data.msg)
+          this.$router.push('/Chat')
+        })
       }
     }
   }
@@ -124,7 +167,7 @@ export default {
     /*background: #eee;*/
     z-index: 9999;
     background-color: #1082FF;
-    background-image: url('../assets/images/sign_bg6.png');
+    background-image: url('../assets/images/sign_bg.png');
     background-size:100%;
     /*background-size:65%;*/
     background-repeat: no-repeat;
@@ -301,6 +344,21 @@ export default {
             border-radius: 50px;
             border:5px solid #ddd;
             box-sizing: border-box;
+          }
+          &.successMask{
+            /*
+            滑动验证码验证成功后加一个遮罩 防止再次点击
+            */
+            &::before{
+              content: '';
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              background: transparent;
+              z-index: 999;
+            }
           }
         }
       }
