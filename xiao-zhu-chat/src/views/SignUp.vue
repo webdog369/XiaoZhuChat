@@ -69,7 +69,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setTips'
+      'setTips',
+      'setCurrentUser'
     ]),
     changeSex () {
       this.girl = !this.girl
@@ -149,6 +150,11 @@ export default {
       } else if (flag && type === '登录') {
         signIn(obj).then(data => {
           this.setTips(data.data.msg)
+          this.setCurrentUser({
+            userName: data.data.user.userName,
+            userSex: data.data.user.userSex,
+            userXZLCId: data.data.user.userXZLCId
+          })
           this.$router.push('/Chat')
         })
       }

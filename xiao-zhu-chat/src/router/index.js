@@ -8,12 +8,12 @@ import Mine from '../views/Mine'
 import ChatInterface from '../views/ChatInterface'
 Vue.use(VueRouter)
 const routes = [
-  { path: '/', redirect: '/SignUp' },
+  { path: '/', redirect: '/Mine' },
   { path: '/SignUp', component: SignUp },
-  { path: '/Chat', component: Chat },
-  { path: '/ContactPerson', component: ContactPerson },
-  { path: '/Moments', component: Moments },
-  { path: '/Mine', component: Mine },
+  { path: '/Chat', component: Chat, name: '消息' },
+  { path: '/ContactPerson', component: ContactPerson, name: '联系人' },
+  { path: '/Moments', component: Moments, name: '圈子' },
+  { path: '/Mine', component: Mine, name: '我的' },
   { path: '/user/:userId', component: ChatInterface }
 ]
 

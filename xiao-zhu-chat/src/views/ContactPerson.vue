@@ -1,9 +1,7 @@
 <template>
-  <transition appear>
     <div class="contact-person">
       <InformationBar :listData="ContactPersonData"></InformationBar>
     </div>
-  </transition>
 </template>
 
 <script>
@@ -39,24 +37,7 @@ export default {
   right: 0;
   top: 80px;
   bottom: 110px;
-  background:lightblue;
+  /*background:lightblue;*/
 }
-/*.v-enter{
-  transform: translateX(100%);
-}
-.v-enter-active{
-  transition: all .3s ease-in-out;
-}
-.v-enter-to{
-  transform: translateX(0%);
-}*/
-.v-leave{
-  transform: translateX(0%);
-}
-.v-leave-active{
-  transition: all .3s ease-in-out;
-}
-.v-leave-to{
-  transform: translateX(-100%);
-}
+
 </style>

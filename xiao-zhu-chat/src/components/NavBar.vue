@@ -1,6 +1,6 @@
 <template>
    <div class="navbar">
-     <h1>消息</h1>
+     <h1>{{this.$route.name}}</h1>
      <div class="btns">
        <div class="search"></div>
        <div class="more" @click="more"></div>
@@ -33,6 +33,7 @@ export default {
   methods: {
     more () {
       this.isMore = !this.isMore
+      console.log(this.$route)
     },
     enter (el, done) {
       Velocity(el, 'transition.shrinkIn', { duration: 300 }, function () {

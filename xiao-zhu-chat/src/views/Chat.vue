@@ -1,10 +1,8 @@
 <template>
-  <transition appear>
     <div class="chat-page">
         <InformationBar :listData="currentChatList"></InformationBar>
       <router-view></router-view>
     </div>
-  </transition>
 </template>
 
 <script>
@@ -103,23 +101,5 @@ export default {
   top: 80px;
   bottom: 110px;
   overflow: hidden;
-}
-/*.v-enter{
-  transform: translateX(-100%);
-}
-.v-enter-active{
-  transition: all .3s ease-in-out;
-}
-.v-enter-to{
-  transform: translateX(0%);
-}*/
-.v-leave{
-  transform: translateX(0%);
-}
-.v-leave-active{
-  transition: all .3s ease-in-out;
-}
-.v-leave-to{
-  transform: translateX(-100%);
 }
 </style>

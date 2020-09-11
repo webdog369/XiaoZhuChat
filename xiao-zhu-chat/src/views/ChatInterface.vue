@@ -1,5 +1,9 @@
 <template>
-    <transition appear>
+    <transition appear
+    :css="false"
+     @enter="enter"
+     @leave="leave"
+    >
       <div class="chat-interface" ref="chatInterfac">
         <ReturnNavBar :title="this.$route.query.userName"></ReturnNavBar>
           <ChatBubble
@@ -16,6 +20,8 @@
 <script>
 import ReturnNavBar from '../components/ReturnNavBar'
 import ChatBubble from '../components/ChatBubble'
+import Velocity from 'velocity-animate'
+import 'velocity-animate/velocity.ui'
 export default {
   name: 'ChatInterface',
   mounted () {
@@ -102,6 +108,16 @@ export default {
         this.chatList.push(obj)
       }
       this.value = ''
+    },
+    enter (el, done) {
+      Velocity(el, 'transition.shrinkIn', { duration: 300 }, function () {
+        done()
+      })
+    },
+    leave (el, done) {
+      Velocity(el, 'transition.shrinkOut', { duration: 300 }, function () {
+        done()
+      })
     }
   }
 }
@@ -149,24 +165,6 @@ export default {
         background-repeat: no-repeat;
       }
     }
-  }
-  .v-enter{
-  transform: translateX(100%);
-  }
-  .v-enter-active{
-  transition: all .3s ease-in-out;
-  }
-  .v-enter-to{
-    transform: translateX(0%);
-  }
-  .v-leave{
-    transform: translateX(0%);
-  }
-  .v-leave-active{
-    transition: all .3s ease-in-out;
-  }
-  .v-leave-to{
-    transform: translateX(100%);
   }
 
 </style>

@@ -1,5 +1,6 @@
 import {
-  SET_TIPS
+  SET_TIPS,
+  SET_CURRENT_USER
 } from './mutations-type'
 export default {
   [SET_TIPS] (state, payload) {
@@ -7,5 +8,8 @@ export default {
     setTimeout(() => {
       state.Tips = ['', false]
     }, 1000)
+  },
+  [SET_CURRENT_USER] (state, payload) {
+    state.currentUser = payload
   }
 }
