@@ -49,7 +49,7 @@
 import { signUp, signIn } from '../api/index'
 import { mapActions } from 'vuex'
 export default {
-  name: 'SignUp',
+  name: 'Sign',
   mounted () {
     this.slideBarWidth = this.$refs.slideBar.clientWidth
   },
@@ -150,12 +150,15 @@ export default {
       } else if (flag && type === '登录') {
         signIn(obj).then(data => {
           this.setTips(data.data.msg)
-          this.setCurrentUser({
-            userName: data.data.user.userName,
-            userSex: data.data.user.userSex,
-            userXZLCId: data.data.user.userXZLCId
-          })
-          this.$router.push('/Chat')
+          if (data.data.msg === '登录成功') {
+            this.setCurrentUser({
+              userName: data.data.user.userName,
+              userSex: data.data.user.userSex,
+              userAvatar: data.data.user.userAvatar,
+              userXZLCId: data.data.user.userXZLCId
+            })
+            this.$router.push('/Chat')
+          }
         })
       }
     }

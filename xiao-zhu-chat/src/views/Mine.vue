@@ -3,33 +3,35 @@
       <div class="top">
         <div class="navbar">
           <h2>我的</h2>
-          <span>设置</span>
+          <span @click="goDetail">设置</span>
         </div>
         <div class="info">
           <div class="avatar">
-            <img :src="currentUser.userAvatar" alt="">
+            <img :src="baseUrl" alt="">
+            <span></span>
+            <form enctype="multipart/form-data">
+              <input type="file" @change="setAvatar" >
+            </form>
           </div>
           <div class="userMsg">
             <h2 class="title">{{currentUser.userName}}</h2>
-            <div class="more">
-              <p class="userId">轻聊号:{{currentUser.userXZLCId}}</p>
-              <span class="moreMsg"></span>
-            </div>
+            <div class="more">轻聊号:{{currentUser.userXZLCId}}</div>
           </div>
         </div>
       </div>
-      <div class="content">
-        <input type="file" ref="file" @change="getFile">
-        <button @click="getFile">获取数据</button>
-        <img :src="baseUrl" alt="">
-      </div>
+      <router-view></router-view>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { userUpData, userAvatarUpData } from '../api'
+
 export default {
   name: 'Mine',
+  mounted () {
+    this.baseUrl = this.currentUser.userAvatar
+  },
   components: {
   },
   data () {
@@ -43,19 +45,33 @@ export default {
     ])
   },
   methods: {
-    getFile (e) {
+    setAvatar (e) {
       const file = e.target.files[0]
+      const type = e.target.files[0].type
       this.baseUrl = window.URL.createObjectURL(file)
-      // const fs = new FileReader()
-      // fs.readAsDataURL(file)
-      // fs.onload = (e) => {
-      //   this.baseUrl = e.target.result
+      // const fr = new FileReader()
+      // fr.readAsDataURL(file)
+      // fr.onload = () => {
+      //   console.log(fr.result)
+      //   this.baseUrl = fr.result
       // }
+      userUpData(this.currentUser.userXZLCId, {
+        key: 'userAvatar',
+        value: this.baseUrl,
+        type: type.replace('image/', '')
+      })
+      userAvatarUpData(window.URL.createObjectURL(file)).then(data => {
+        console.log(data)
+      })
+    },
+    goDetail () {
+      this.$router.push({
+        path: '/Mine/detail'
+      })
     }
   }
 }
 </script>
-
 <style scoped lang="scss">
 .mine{
   position: fixed;
@@ -63,21 +79,11 @@ export default {
   right: 0;
   top: 0;
   bottom: 110px;
-  /*background:#fff;*/
-  background-image: url('../assets/images/Mine_bg.jpg');
-  background-size: cover;
+  background:rgb(224,224,224);
+  /*background-image: url('../assets/images/Mine_bg.jpg');*/
+  /*background-size: cover;*/
   z-index: 1000;
   overflow: hidden;
-  &::after{
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    background-color: rgba(0,0,0,.2);
-    z-index: -1;
-  }
   .top{
     width: 100%;
     display: flex;
@@ -86,7 +92,7 @@ export default {
     align-items: center;
     padding-top: 15px;
     padding-bottom: 15px;
-    /*background: #1082FF;*/
+    background: #1082FF;
     .navbar{
       width: 95%;
       height: 80px;
@@ -103,51 +109,60 @@ export default {
       }
     }
     .info{
-      width: 95%;
-      height: 180px;
+      width:100%;
+      height: 380px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       .avatar{
+        position: relative;
         width: 150px;
         height: 150px;
         /*background-color: #fff;*/
-        background-image:url("../assets/images/avatar_boy.png");
-        background-size: cover;
-        border-radius: 10px;
-        margin: 0 40px 0 10px;
+        img{
+          width: 100%;
+          height: 100%;
+          background-image: url('../assets/images/user.png');
+          background-size: 80%;
+          background-repeat: no-repeat;
+          background-position:center;
+          border-radius: 10px;
+        }
+        input,span{
+          display: inline-block;
+          position: absolute;
+          right: -40px;
+          bottom: 0;
+          width: 30px;
+          height: 30px;
+        }
+        input{
+          opacity: 0;
+        }
+        span{
+          background-image: url('../assets/images/set.png');
+          background-size: cover;
+        }
       }
       .userMsg{
-        height: 150px;
-        flex: 1;
-        /*background:orange;*/
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        width: 220px;
         .title{
           width: 100%;
-          height: 100px;
+          height: 50px;
+          text-align: center;
           font-size: 45px;
           color: #fff;
+          margin-top:15px;
+          margin-bottom: 15px;
         }
         .more{
-          width: 100%;
-          height:50px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          p{
-            display: inline-block;
+            width: 100%;
+            height:50px;
             font-size: 28px;
-            color: #eee;
+            text-align: center;
+            color: #fff;
           }
-          span{
-            width: 35px;
-            height: 35px;
-            background-image: url('../assets/images/more_light_btn.png');
-            background-size: cover;
-            margin-right:10px;
-          }
-        }
       }
     }
 

@@ -9,7 +9,7 @@ const Schema = new mongoose.Schema({
     userName:{ type: String },
     password:{ type: String },
     userAvatar:{ type: String },
-    userSex:{ type: Number },
+    userSex:{ type: String },
     userXZLCId:{ type: Number },
 });
 

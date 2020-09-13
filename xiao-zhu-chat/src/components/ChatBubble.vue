@@ -98,7 +98,7 @@ export default {
             margin-left: 30px;
             font-size: 28px;
             line-height: 55px;
-            overflow: hidden;
+            word-wrap: break-word;
             &::after{
               position: absolute;
               content: '';
@@ -138,7 +138,7 @@ export default {
             margin-right: 30px;
             font-size: 28px;
             line-height: 55px;
-            overflow: hidden;
+            word-wrap: break-word;
             &::after{
               position: absolute;
               content: '';
@@ -148,7 +148,7 @@ export default {
               height: 30px;
               transform:  rotate(45deg);
               background: #1082FF;
-              z-index: -1;
+              z-index:-1;
             }
           }
         }

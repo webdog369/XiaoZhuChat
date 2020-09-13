@@ -36,5 +36,15 @@ export default {
   },
   post: async function (path = '', data = {}) {
     return await axios.post(path, data)
+  },
+  postFile: async function (path = '', data = {}) {
+    return await axios.post(path, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  },
+  patch: async function (path = '', data = {}) {
+    return await axios.patch(path, data)
   }
 }
