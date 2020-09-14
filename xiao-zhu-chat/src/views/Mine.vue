@@ -9,9 +9,7 @@
           <div class="avatar">
             <img :src="baseUrl" alt="">
             <span></span>
-            <form enctype="multipart/form-data">
-              <input type="file" @change="setAvatar" >
-            </form>
+              <input type="file"  name="newAvatar"  @change.prevent="setAvatar">
           </div>
           <div class="userMsg">
             <h2 class="title">{{currentUser.userName}}</h2>
@@ -25,7 +23,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { userUpData, userAvatarUpData } from '../api'
+import { userAvatarUpData } from '../api'
+// import $ from 'jquery'
+
+// import Vue from 'vue'
 
 export default {
   name: 'Mine',
@@ -47,22 +48,71 @@ export default {
   methods: {
     setAvatar (e) {
       const file = e.target.files[0]
-      const type = e.target.files[0].type
       this.baseUrl = window.URL.createObjectURL(file)
+      window.URL.revokeObjectURL(file)
+      // const fm = new FormData()
+      // fm.append('newAvatar', file)
+      // fm.append('name', 'avatar')
+      // userAvatarUpData(fm).then(data => {
+      //   console.log(data)
+      // })
+      const fm = new FormData()
+      fm.append('newAvatar', file)
+      fm.append('name', 'avatar')
+      userAvatarUpData(fm, this.currentUser.userXZLCId).then(data => {
+        console.log(data)
+      })
+      // const fm = new FormData()
+      // fm.append('newAvatar', file)
+      // $.ajax({
+      //   url: 'http://127.0.0.1:3000/avatar',
+      //   type: 'PATCH',
+      //   contentType: false,
+      //   data: fm,
+      //   cache: false,
+      //   processData: false,
+      //   success: (data) => {
+      //     console.log(data)
+      //   }
+      // })
+      // const fr = new FileReader()
+      // fr.readAsArrayBuffer(file)
+      // fr.onload = () => {
+      //   const data = fr.result
+      //   const lenght = fr.result.byteLength
+      //   console.log(lenght)
+      //   userAvatarUpData({
+      //     newAvatar: data
+      //   }).then(data => {
+      //     console.log(data)
+      //   })
+      // }
+      // const url = new URL(this.baseUrl).href
       // const fr = new FileReader()
       // fr.readAsDataURL(file)
       // fr.onload = () => {
       //   console.log(fr.result)
       //   this.baseUrl = fr.result
       // }
-      userUpData(this.currentUser.userXZLCId, {
-        key: 'userAvatar',
-        value: this.baseUrl,
-        type: type.replace('image/', '')
-      })
-      userAvatarUpData(window.URL.createObjectURL(file)).then(data => {
-        console.log(data)
-      })
+      // userUpData(this.currentUser.userXZLCId, {
+      //   key: 'userAvatar',
+      //   value: this.baseUrl,
+      //   type: type.replace('image/', '')
+      // })
+      // userAvatarUpData(window.URL.createObjectURL(file)).then(data => {
+      //   console.log(data)
+      // })
+      // console.log(fm)
+      // Vue.self.instance.post('/avatar', fm).then(data => {
+      //   console.log(data)
+      // }).catch(err => {
+      //   console.log(err)
+      // })
+      // userAvatarUpData({
+      //   newAvatar: data
+      // }).then(data => {
+      //   console.log(data)
+      // })
     },
     goDetail () {
       this.$router.push({

@@ -1,4 +1,5 @@
 import axios from 'axios'
+// import Vue from 'vue'
 
 // 进行全局配置
 axios.defaults.baseURL = 'http://localhost:3000'
@@ -38,13 +39,29 @@ export default {
     return await axios.post(path, data)
   },
   postFile: async function (path = '', data = {}) {
-    return await axios.post(path, data, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    return await axios.patch(path, data, {
     })
   },
   patch: async function (path = '', data = {}) {
     return await axios.patch(path, data)
   }
+  // postFile: function (path, data) {
+  //   return axios.create({
+  //     baseURL: 'http://localhost:3000',
+  //     timeout: 1000,
+  //     headers: {
+  //       'Content-Type': 'multipart/form-data'
+  //     }
+  //   }).post(path, data)
+  // }
 }
+
+// const insttance = axios.create({
+//   baseURL: 'http://localhost:3000',
+//   timeout: 1000,
+//   headers: {
+//     'Content-Type': 'multipart/form-data'
+//   }
+// })
+// Vue.config.productionTip = false
+// Vue.prototype.instance = insttance

@@ -2,7 +2,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const {signUp, signIn, userSearchAll,userUpData, userDeleteAll} = require('./api/userDataApi')
-const {aaa,cb} = require('./api/upAvatar')
+const {multers,cb} = require('./api/upAvatar')
+const fs =require('fs')
 
 // 创建express实例
 const app = express()
@@ -37,7 +38,7 @@ app.delete('/user/delete/all',userDeleteAll)
 // 用户修改用户数据
 app.patch('/user/upData/:id',userUpData)
 
-app.post('/avatar',aaa,cb );
+app.patch('/avatar',multers,cb );
 // let upload = multer({ dest: './public/images/' });
 
 // 单图上传
@@ -46,11 +47,20 @@ app.post('/avatar',aaa,cb );
 //         msg:req.file.path
 //     });
 // });
-
-
-
-
-
+// app.post('/imageLoad', async (req,res)=>{
+//     const rs = fs.createReadStream(req.body.newAvatar)
+//     const ws = fs.createWriteStream('./public/images/')
+//     rs.on('data',data=>{
+//         console.log('读取到的数据是:', data)
+//     });
+//     rs.on('end',data=>{
+//         console.log('读取流结束,关闭了写入流');
+//         ws.end()
+//     })
+//     res.send({
+//         msg:'ok'
+//     })
+// })
 
 /*
     ====================================项目API接口=============================================
