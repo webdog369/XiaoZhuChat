@@ -1,6 +1,7 @@
 import {
   SET_TIPS,
-  SET_CURRENT_USER
+  SET_CURRENT_USER,
+  SET_SELECT_TIPS
 } from './mutations-type'
 export default {
   [SET_TIPS] (state, payload) {
@@ -11,5 +12,8 @@ export default {
   },
   [SET_CURRENT_USER] (state, payload) {
     state.currentUser = payload
+  },
+  [SET_SELECT_TIPS] (state, payload) {
+    state.SelectTips = [payload[0], payload[1], payload[2]]
   }
 }

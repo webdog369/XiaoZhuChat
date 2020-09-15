@@ -21,7 +21,8 @@ const signUp = async (req,res)=>{
         userName:req.body.userName,
         password:req.body.password,
         userAvatar:userAvatar,
-        userXZLCId:userXZLCId
+        userXZLCId:userXZLCId,
+        userSex:req.body.userSex
     });
     res.send({msg:'注册成功!', data:user});
 }
@@ -74,10 +75,48 @@ const userUpData = async (req,res) => {
     res.send({msg:'修改成功',
             result:data})
 }
+
+
+// 用户上传头像接口
+// 1.详细配置文件写入目录以及文件名
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/userAvatar/');
+    },
+    filename: function (req, file, cb) {
+        const extName = file.mimetype.replace('image/', '')
+        // cb(null, `avatar_${id}.${type}`);
+        cb(null, `avatar_${req.query.id}.${extName}`);
+    }
+});
+
+// 2.将配置好的信息创给multer
+let upload = multer({ storage: storage })
+
+// 3.调用multer的single方法
+let multers =  upload.single('newAvatar')
+
+// 4.处理返回数据
+let cb  = async function(req, res){
+    const url = `http://localhost:3000/userAvatar/${req.file.filename}`
+    XZLC_User_Data.findOneAndUpdate({
+        userXZLCId:req.query.id
+    },{
+        userAvatar:url
+    })
+    const newUserData = await XZLC_User_Data.findOne({
+        userXZLCId:req.query.id
+    })
+    res.send({
+        newAvatarUrl: newUserData.userAvatar,
+        msg:'头像修改成功'
+    });
+}
+
 // 删除所有用户接口
 const userDeleteAll = async (req,res) => {
     const data = await XZLC_User_Data.remove()
     res.send("delete ok")
 }
 
-module.exports = {signUp, signIn, userSearchAll,userUpData, userDeleteAll}
+module.exports = {signUp, signIn, userSearchAll,userUpData, userDeleteAll,multers,cb}

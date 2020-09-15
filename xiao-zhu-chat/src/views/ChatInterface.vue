@@ -10,8 +10,9 @@
             :chatList="chatList"
           ></ChatBubble>
         <div class="input-box">
-             <input type="text" v-model="value" @keydown.enter="enterMsg">
+             <input type="text" v-model="value" @keydown.enter="enterMsg" >
           <div class="more"></div>
+          <button v-show="value!==''" @click="enterMsg" class="send">发送</button>
         </div>
       </div>
     </transition>
@@ -25,6 +26,9 @@ import 'velocity-animate/velocity.ui'
 export default {
   name: 'ChatInterface',
   mounted () {
+    if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+      this.phone = true
+    }
   },
   components: {
     ReturnNavBar,
@@ -33,6 +37,7 @@ export default {
   data () {
     return {
       value: '',
+      phone: false,
       chatList: [
         {
           name: '哑戏',
@@ -94,28 +99,38 @@ export default {
     }
   },
   methods: {
-    enterMsg (key) {
-      console.log('消息: ' + key.target.value + ' 发送成功')
-      if (key.target.value !== '') {
-        const obj = {
-          name: '二向箔',
-          userId: '001',
-          picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
-          say: key.target.value,
-          time: '20:58',
-          tag: 'MY_MSG'
-        }
-        this.chatList.push(obj)
+    enterMsg (e) {
+      const obj = {
+        name: '二向箔',
+        userId: '001',
+        picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
+        say: this.value,
+        time: '20:58',
+        tag: 'MY_MSG'
       }
+      this.chatList.push(obj)
       this.value = ''
     },
+    /*    up () {
+      console.log(this.phone)
+      if (this.phone) {
+        setTimeout(() => {
+          this.$refs.chatInterfac.classList.add('up')
+        }, 50)
+      }
+    },
+    down () {
+      if (this.phone) {
+        this.$refs.chatInterfac.classList.remove('up')
+      }
+    }, */
     enter (el, done) {
-      Velocity(el, 'transition.shrinkIn', { duration: 300 }, function () {
+      Velocity(el, 'transition.shrinkIn', { duration: 100 }, function () {
         done()
       })
     },
     leave (el, done) {
-      Velocity(el, 'transition.shrinkOut', { duration: 300 }, function () {
+      Velocity(el, 'transition.shrinkOut', { duration: 100 }, function () {
         done()
       })
     }
@@ -127,8 +142,9 @@ export default {
   .chat-interface{
     position: fixed;
     left: 0;
-    right: 0;
     top: 0;
+    width: 100%;
+    /*height: 100%;*/
     bottom: 0;
     background:rgb(230,230,230);
     z-index:  1100;
@@ -163,6 +179,16 @@ export default {
         background-image: url('../assets/images/more.png');
         background-size: cover;
         background-repeat: no-repeat;
+      }
+      .send{
+        width: 120px;
+        height: 80px;
+        margin-right: 10px;
+        background: #1082FF;
+        border-radius: 10px;
+        border:none;
+        color: #fff;
+        font-size: 28px;
       }
     }
   }

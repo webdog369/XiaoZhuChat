@@ -9,6 +9,7 @@
           <div class="avatar">
             <img :src="baseUrl" alt="">
             <span></span>
+            <i  ref="userState"></i>
               <input type="file"  name="newAvatar"  @change.prevent="setAvatar">
           </div>
           <div class="userMsg">
@@ -22,7 +23,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { userAvatarUpData } from '../api'
 // import $ from 'jquery'
 
@@ -45,7 +46,30 @@ export default {
       'currentUser'
     ])
   },
+  watch: {
+    currentUser (newData) {
+      const currentState = newData.userState
+      this.$refs.userState.className = ''
+      switch (currentState) {
+        case '在线':
+          this.$refs.userState.classList.add('online')
+          break
+        case '忙碌':
+          this.$refs.userState.classList.add('busy')
+          break
+        case '请勿打扰':
+          this.$refs.userState.classList.add('doNotDisturb')
+          break
+        case '隐身':
+          this.$refs.userState.classList.add('stealth')
+          break
+      }
+    }
+  },
   methods: {
+    ...mapActions([
+      'setTips'
+    ]),
     setAvatar (e) {
       const file = e.target.files[0]
       this.baseUrl = window.URL.createObjectURL(file)
@@ -61,6 +85,7 @@ export default {
       fm.append('name', 'avatar')
       userAvatarUpData(fm, this.currentUser.userXZLCId).then(data => {
         console.log(data)
+        this.setTips(data.data.msg)
       })
       // const fm = new FormData()
       // fm.append('newAvatar', file)
@@ -178,6 +203,30 @@ export default {
           background-repeat: no-repeat;
           background-position:center;
           border-radius: 10px;
+        }
+        i{
+          position: absolute;
+          right: -10px;
+          top: -10px;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background-size: 120%;
+          background-color: #fff;
+          background-image: url('../assets/images/userState_online.png');
+          background-position: center;
+          &.online{
+            background-image: url('../assets/images/userState_online.png');
+          }
+          &.busy{
+            background-image: url('../assets/images/userState_busy.png');
+          }
+          &.doNotDisturb{
+            background-image: url('../assets/images/userState_doNotDisturb.png');
+          }
+          &.stealth{
+            background-image: url('../assets/images/userState_stealth.png');
+          }
         }
         input,span{
           display: inline-block;

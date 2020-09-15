@@ -35,6 +35,11 @@
       document.documentElement.style.fontSize = window.innerWidth / 7.5 + "px";
       document.documentElement.setAttribute('data-dpr', Math.round(window.devicePixelRatio) + '');
       document.documentElement.setAttribute('data-theme', 'light');
+      if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+        document.documentElement.setAttribute('userAgent', 'phone');
+      }else {
+        document.documentElement.setAttribute('userAgent', 'pc');
+      }
     </script>
   </head>
   <body>

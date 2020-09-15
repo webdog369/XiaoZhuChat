@@ -10,7 +10,7 @@ import UserDetail from '../components/Mine/UserDetail'
 import SetUserData from '../components/Mine/SetUserData'
 Vue.use(VueRouter)
 const routes = [
-  { path: '/', redirect: '/Mine' },
+  { path: '/', redirect: '/sign' },
   { path: '/Sign', component: Sign },
   { path: '/Chat', component: Chat, name: '消息' },
   { path: '/ContactPerson', component: ContactPerson, name: '联系人' },

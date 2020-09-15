@@ -33,9 +33,9 @@
             向右滑动验证
             <div class="slideBg" ref="slideBg"></div>
             <div class="slide_btn"
-            @touchstart="touchstart"
-            @touchmove="touchmove"
-            @touchend="touchend"
+            @touchstart.prevent="touchstart"
+            @touchmove.prevent="touchmove"
+            @touchend.prevent="touchend"
             ></div>
           </div>
         </div>
@@ -155,7 +155,8 @@ export default {
               userName: data.data.user.userName,
               userSex: data.data.user.userSex,
               userAvatar: data.data.user.userAvatar,
-              userXZLCId: data.data.user.userXZLCId
+              userXZLCId: data.data.user.userXZLCId,
+              userState: '在线'
             })
             this.$router.push('/Chat')
           }

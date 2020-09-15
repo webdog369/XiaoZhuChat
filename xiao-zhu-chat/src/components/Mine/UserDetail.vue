@@ -3,6 +3,7 @@
   <ReturnNavBar :title="'设置'"></ReturnNavBar>
   <RouterBar :data="['用户名',currentUser.userName]"></RouterBar>
   <RouterBar :data="['性别',currentUser.userSex]"></RouterBar>
+  <RouterBar :data="['帐号状态',currentUser.userState]"></RouterBar>
 </div>
 </template>
 

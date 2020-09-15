@@ -102,11 +102,11 @@ export default {
             &::after{
               position: absolute;
               content: '';
-              left: -10px;
+              left: -8px;
               top: 25px;
               width: 30px;
               height: 30px;
-              transform:  rotate(45deg);
+              transform:  rotateX(50deg) rotate(45deg) ;
               background:#FFF;
               z-index: -1;
             }
@@ -142,11 +142,11 @@ export default {
             &::after{
               position: absolute;
               content: '';
-              right: -10px;
+              right: -8px;
               top: 25px;
               width: 30px;
               height: 30px;
-              transform:  rotate(45deg);
+              transform:  rotateX(-50deg) rotate(45deg) ;
               background: #1082FF;
               z-index:-1;
             }

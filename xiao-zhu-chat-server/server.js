@@ -1,9 +1,16 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const {signUp, signIn, userSearchAll,userUpData, userDeleteAll} = require('./api/userDataApi')
-const {multers,cb} = require('./api/upAvatar')
 const fs =require('fs')
+const {
+    signUp,
+    signIn,
+    userSearchAll,
+    userUpData,
+    userDeleteAll,
+    multers,
+    cb
+} = require('./api/userDataApi')
 
 // 创建express实例
 const app = express()
@@ -39,6 +46,7 @@ app.delete('/user/delete/all',userDeleteAll)
 app.patch('/user/upData/:id',userUpData)
 
 app.patch('/avatar',multers,cb );
+
 // let upload = multer({ dest: './public/images/' });
 
 // 单图上传

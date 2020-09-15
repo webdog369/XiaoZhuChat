@@ -5,5 +5,8 @@ export default {
   },
   currentUser (state) {
     return state.currentUser
+  },
+  SelectTips (state) {
+    return state.SelectTips
   }
 }

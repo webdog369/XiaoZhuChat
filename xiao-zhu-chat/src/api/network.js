@@ -3,6 +3,7 @@ import axios from 'axios'
 
 // 进行全局配置
 axios.defaults.baseURL = 'http://localhost:3000'
+// axios.defaults.baseURL = 'http://192.168.43.125:3000'
 axios.defaults.timeout = 3000
 
 // 封装请求方法
