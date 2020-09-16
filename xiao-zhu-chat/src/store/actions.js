@@ -11,6 +11,6 @@ export default {
     commit(SET_CURRENT_USER, payload)
   },
   setSelectTips ({ commit }, payload) {
-    commit(SET_SELECT_TIPS, payload)
+    commit(SET_SELECT_TIPS, [payload[0], payload[1]])
   }
 }

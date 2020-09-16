@@ -2,12 +2,12 @@
   <ScrollView ref="scrollView">
     <div class="information-bar">
       <div class="items" v-for="(value,index) in listData" :key="index">
-        <i :style="{backgroundImage:`url(${value.picUrl})`}"></i>
-        <div class="data" @click="goChat('zdgdwxh',value.remakeName?value.remakeName:value.name)">
+        <i :style="{backgroundImage:`url(${value.userAvatar})`}"></i>
+        <div class="data" @click="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName)">
           <div class="info">
             <h2
               :class="{'card':!value.newMsg}"
-            >{{value.remakeName?value.remakeName:value.name}}</h2>
+            >{{value.remakeName?value.remakeName:value.userName}}</h2>
             <span class="msg" v-if="value.newMsg">{{value.newMsg}}</span>
           </div>
           <div class="time" v-if="value.time">{{value.time}}</div>

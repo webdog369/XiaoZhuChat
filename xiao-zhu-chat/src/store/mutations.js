@@ -14,6 +14,6 @@ export default {
     state.currentUser = payload
   },
   [SET_SELECT_TIPS] (state, payload) {
-    state.SelectTips = [payload[0], payload[1], payload[2]]
+    state.SelectTips = payload
   }
 }

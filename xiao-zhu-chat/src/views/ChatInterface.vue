@@ -1,9 +1,4 @@
 <template>
-    <transition appear
-    :css="false"
-     @enter="enter"
-     @leave="leave"
-    >
       <div class="chat-interface" ref="chatInterfac">
         <ReturnNavBar :title="this.$route.query.userName"></ReturnNavBar>
           <ChatBubble
@@ -15,20 +10,16 @@
           <button v-show="value!==''" @click="enterMsg" class="send">发送</button>
         </div>
       </div>
-    </transition>
 </template>
 
 <script>
 import ReturnNavBar from '../components/ReturnNavBar'
 import ChatBubble from '../components/ChatBubble'
-import Velocity from 'velocity-animate'
-import 'velocity-animate/velocity.ui'
+/* import Velocity from 'velocity-animate'
+import 'velocity-animate/velocity.ui' */
 export default {
   name: 'ChatInterface',
   mounted () {
-    if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
-      this.phone = true
-    }
   },
   components: {
     ReturnNavBar,
@@ -110,7 +101,7 @@ export default {
       }
       this.chatList.push(obj)
       this.value = ''
-    },
+    }
     /*    up () {
       console.log(this.phone)
       if (this.phone) {
@@ -124,16 +115,16 @@ export default {
         this.$refs.chatInterfac.classList.remove('up')
       }
     }, */
-    enter (el, done) {
+    /*   enter (el, done) {
       Velocity(el, 'transition.shrinkIn', { duration: 100 }, function () {
         done()
       })
     },
     leave (el, done) {
-      Velocity(el, 'transition.shrinkOut', { duration: 100 }, function () {
+      Velocity(el, 'transition.fadeOut', { duration: 100 }, function () {
         done()
       })
-    }
+    } */
   }
 }
 </script>
@@ -147,7 +138,7 @@ export default {
     /*height: 100%;*/
     bottom: 0;
     background:rgb(230,230,230);
-    z-index:  1100;
+    z-index:  9999;
     .input-box{
       position: absolute;
       left: 0;

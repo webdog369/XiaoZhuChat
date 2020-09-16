@@ -1,6 +1,4 @@
-const {XZLC_User_Data} = require('../user-data-db/xzlc-user-data')
-const fs = require('fs')
-const path = require('path')
+const {XZLC_User_Data} = require('../user-data-db/xzlc_collections/User')
 const multer = require('multer')
 // 注册接口
 const signUp = async (req,res)=>{
@@ -45,6 +43,24 @@ const signIn = async (req, res)=>{
     });
 }
 
+
+// 查找单个用户
+const userSearchOne = async (req,res) => {
+    const friendId = req.body.friendId
+    const friendName = req.body.friendName
+    // 1.查询用户添加的帐号是否存在
+    const friend = await XZLC_User_Data.findOne({'$or':[{userXZLCId:friendId},{userName:friendName}]})
+    if (friend === null){
+        res.send('您查找的用户不存在!')
+    }else {
+        res.send([{
+            userName:friend.userName,
+            userAvatar:friend.userAvatar,
+            userSex:friend.userSex,
+            userXZLCId:friend.userXZLCId
+        }])
+    }
+}
 // 查找所有用户接口
 const userSearchAll = async (req,res) => {
     const data = await XZLC_User_Data.find()
@@ -66,10 +82,8 @@ const userUpData = async (req,res) => {
         case 'userSex' :
             newData = {userSex:value}
             break
-        case 'userAvatar':
-            break
     }
-    const data = await XZLC_User_Data.findOneAndUpdate({
+    const data = await XZLC_User_Data.updateOne({
         userXZLCId:id
     },newData)
     res.send({msg:'修改成功',
@@ -99,7 +113,8 @@ let multers =  upload.single('newAvatar')
 // 4.处理返回数据
 let cb  = async function(req, res){
     const url = `http://localhost:3000/userAvatar/${req.file.filename}`
-    XZLC_User_Data.findOneAndUpdate({
+    console.log('我执行了吗',url);
+    const newAvatar = await XZLC_User_Data.updateOne({
         userXZLCId:req.query.id
     },{
         userAvatar:url
@@ -119,4 +134,13 @@ const userDeleteAll = async (req,res) => {
     res.send("delete ok")
 }
 
-module.exports = {signUp, signIn, userSearchAll,userUpData, userDeleteAll,multers,cb}
+module.exports = {
+    signUp,
+    signIn,
+    userSearchOne,
+    userSearchAll,
+    userUpData,
+    userDeleteAll,
+    multers,
+    cb
+}

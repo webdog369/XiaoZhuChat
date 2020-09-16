@@ -31,7 +31,6 @@ export default {
   },
   mounted () {
     this.title = this.$route.query.title
-    this.userNmae = this.$route.query.value
     this.value = this.$route.query.value
     this.currentUserId = this.currentUser.userXZLCId
   },
@@ -60,10 +59,10 @@ export default {
     submit (e) {
       userUpData(this.currentUserId, {
         key: 'userName',
-        value: this.userNmae
+        value: this.value
       })
       this.setCurrentUser({
-        userName: this.userNmae,
+        userName: this.value,
         userAvatar: this.currentUser.userAvatar,
         userXZLCId: this.currentUserId,
         userSex: this.currentUser.userSex,

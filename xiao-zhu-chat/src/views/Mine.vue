@@ -32,9 +32,11 @@ import { userAvatarUpData } from '../api'
 export default {
   name: 'Mine',
   mounted () {
+    // 进入mine页面时需要重新从vuex中读取用户头像地址
     this.baseUrl = this.currentUser.userAvatar
-  },
-  components: {
+    // 重新进入页面时watch中对userState的监测无法触发,需要重新读取用户当前状态
+    const currentState = this.currentUser.userState
+    this.monitoringStatus(currentState)
   },
   data () {
     return {
@@ -47,29 +49,18 @@ export default {
     ])
   },
   watch: {
+    // 监听currentUser中的userState发生变化时 及时更新状态图标
     currentUser (newData) {
       const currentState = newData.userState
-      this.$refs.userState.className = ''
-      switch (currentState) {
-        case '在线':
-          this.$refs.userState.classList.add('online')
-          break
-        case '忙碌':
-          this.$refs.userState.classList.add('busy')
-          break
-        case '请勿打扰':
-          this.$refs.userState.classList.add('doNotDisturb')
-          break
-        case '隐身':
-          this.$refs.userState.classList.add('stealth')
-          break
-      }
+      this.monitoringStatus(currentState)
     }
   },
   methods: {
     ...mapActions([
-      'setTips'
+      'setTips',
+      'setCurrentUser'
     ]),
+    // 更换用户头像
     setAvatar (e) {
       const file = e.target.files[0]
       this.baseUrl = window.URL.createObjectURL(file)
@@ -86,6 +77,14 @@ export default {
       userAvatarUpData(fm, this.currentUser.userXZLCId).then(data => {
         console.log(data)
         this.setTips(data.data.msg)
+      })
+      // 修改头像后及时修改vuex中的用户数据
+      this.setCurrentUser({
+        userName: this.currentUser.userName,
+        userAvatar: this.baseUrl,
+        userSex: this.currentUser.userSex,
+        userXZLCId: this.currentUser.userXZLCId,
+        userState: this.currentUser.userState
       })
       // const fm = new FormData()
       // fm.append('newAvatar', file)
@@ -139,10 +138,29 @@ export default {
       //   console.log(data)
       // })
     },
+    // 跳转到详情页
     goDetail () {
       this.$router.push({
         path: '/Mine/detail'
       })
+    },
+    // 判断当前账号状态的方法
+    monitoringStatus (currentState) {
+      this.$refs.userState.className = ''
+      switch (currentState) {
+        case '在线':
+          this.$refs.userState.classList.add('online')
+          break
+        case '忙碌':
+          this.$refs.userState.classList.add('busy')
+          break
+        case '请勿打扰':
+          this.$refs.userState.classList.add('doNotDisturb')
+          break
+        case '隐身':
+          this.$refs.userState.classList.add('stealth')
+          break
+      }
     }
   }
 }

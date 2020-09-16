@@ -11,7 +11,7 @@
      @leave="leave"
      >
      <div class="more-info" v-show="isMore">
-       <div class="item">
+       <div class="item" @click.stop="addFriend">
          <i></i>
          <span>添加朋友</span>
        </div>
@@ -34,6 +34,10 @@ export default {
     more () {
       this.isMore = !this.isMore
       console.log(this.$route)
+    },
+    addFriend () {
+      this.isMore = false
+      this.$router.push({ path: '/addFriend' })
     },
     enter (el, done) {
       Velocity(el, 'transition.shrinkIn', { duration: 300 }, function () {

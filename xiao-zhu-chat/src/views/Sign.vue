@@ -123,7 +123,7 @@ export default {
     userSign (type) {
       const userName = this.$refs.userName.value
       const password = this.$refs.password.value
-      const userSex = this.girl ? 'girl' : 'boy'
+      const userSex = this.girl ? '女' : '男'
       const obj = {
         userName: userName,
         password: password,

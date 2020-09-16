@@ -8,6 +8,7 @@ import Mine from '../views/Mine'
 import ChatInterface from '../views/ChatInterface'
 import UserDetail from '../components/Mine/UserDetail'
 import SetUserData from '../components/Mine/SetUserData'
+import AddFriend from '../components/AddFriend'
 Vue.use(VueRouter)
 const routes = [
   { path: '/', redirect: '/sign' },
@@ -24,7 +25,8 @@ const routes = [
       { path: 'set', component: SetUserData }
     ]
   },
-  { path: '/user/:userId', component: ChatInterface }
+  { path: '/user/:userId', component: ChatInterface, name: '聊天窗口' },
+  { path: '/addFriend', component: AddFriend, name: '添加朋友' }
 ]
 
 const router = new VueRouter({
