@@ -1,7 +1,7 @@
 <template>
   <ScrollView ref="scrollView">
     <div class="information-bar">
-      <div class="items" v-for="(value,index) in listData" :key="index">
+        <div class="items" v-for="(value,index) in listData" :key="index">
         <i :style="{backgroundImage:`url(${value.userAvatar})`}"></i>
         <div class="data" @click="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName)">
           <div class="info">
@@ -19,11 +19,19 @@
 
 <script>
 import ScrollView from '../components/ScrollView'
-
 export default {
   name: 'InformationBar',
+  beforeMount () {
+    console.log(this.listData)
+  },
+  mounted () {
+  },
   components: {
     ScrollView
+  },
+  data () {
+    return {
+    }
   },
   props: {
     listData: {
@@ -31,6 +39,8 @@ export default {
       default: () => [],
       require: true
     }
+  },
+  watch: {
   },
   methods: {
     goChat (id, userName) {
@@ -90,6 +100,28 @@ export default {
         font-size: 24px;
         color: #666;
       }
+    }
+  }
+  .items-n{
+    width: 100%;
+    height: 120px;
+    display: flex;
+    justify-content:start;
+    align-items: center;
+    i{
+      width: 80px;
+      height: 80px;
+      background: #eee;
+      background-size: cover;
+      border-radius: 15px;
+      margin: 0 20px 0 10px;
+    }
+    .data-n{
+      width: 50%;
+      height: 50px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      background: #eee;
     }
   }
 }

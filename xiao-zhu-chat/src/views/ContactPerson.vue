@@ -1,11 +1,11 @@
 <template>
-    <div :class="['contact-person',{'noFiend':!ContactPersonData}]">
-      <div class="no-friend" v-show="!ContactPersonData">
+    <div class="contact-person" ref="contactPerson">
+      <div class="no-friend" v-show="noFriend">
         <i></i>
         <span>点击加号添加好友</span>
         <p>联系人空空如也~</p>
       </div>
-      <InformationBar :listData="ContactPersonData"></InformationBar>
+        <InformationBar :listData="ContactPersonData"></InformationBar>
     </div>
 </template>
 
@@ -16,13 +16,24 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'ContactPerson',
   beforeMount () {
+    // 根据当前用户id查找用户的好友列表
     userFriendList(this.currentUser.userXZLCId).then(data => {
-      for (const key of data.result) {
-        userSearchOne({
-          friendId: key
-        }).then(data => {
-          this.ContactPersonData.push(data.data[0])
-        })
+      // 若当前用户没有好友则返回的是一个字符串 若有好友 返回的是数组
+      if (typeof data.result !== 'string') {
+        // 若获取到还有列表 则将列表中的好友id提取出来
+        for (const key of data.result) {
+          // 根据提取出来的好友id 查询到好友最新的详细个人信息
+          userSearchOne({
+            friendId: key
+          }).then(data => {
+            // 将查询到的信息push到ContactPersonData中
+            this.ContactPersonData.push(data.data[0])
+          })
+        }
+      } else {
+        // 若返回的是字符串 则说明该用户没有好友 则显示没有好友的样式
+        this.$refs.contactPerson.classList.add('no-friend-bg')
+        this.noFriend = true
       }
     })
   },
@@ -36,8 +47,11 @@ export default {
   },
   data () {
     return {
-      ContactPersonData: []
+      ContactPersonData: [],
+      noFriend: false
     }
+  },
+  watch: {
   }
 }
 </script>
@@ -50,7 +64,7 @@ export default {
   top: 80px;
   bottom: 110px;
   text-align: center;
-  &.noFiend{
+  &.no-friend-bg{
     background-image: url('../assets/images/no_friend.png');
     background-size: 25%;
     background-position: center;

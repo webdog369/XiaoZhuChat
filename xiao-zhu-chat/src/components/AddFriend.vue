@@ -95,6 +95,8 @@ export default {
       ).then(data => {
         console.log(data)
         this.setSelectTips([data.data.msg, true])
+        this.searchResult = []
+        this.$router.go(-1)
       })
     }
   }

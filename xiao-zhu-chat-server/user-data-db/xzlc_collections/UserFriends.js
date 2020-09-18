@@ -8,7 +8,8 @@ mongoose.connect('mongodb://localhost:27017/xzlc-user-data',{
 const Schema = new mongoose.Schema({
     userXZLCId:{ type: Number },
     userFriend:[{
-        userId:{type:Number}
+        userId:{type:Number},
+        remakeName:{type:String}
     }]
 });
 

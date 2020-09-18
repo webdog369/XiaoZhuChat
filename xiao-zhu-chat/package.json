@@ -15,6 +15,7 @@
     "fastclick": "^1.0.6",
     "jquery": "^3.5.1",
     "mongoose": "^5.10.4",
+    "vant": "^2.10.7",
     "velocity-animate": "^1.5.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",

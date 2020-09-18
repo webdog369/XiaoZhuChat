@@ -4,6 +4,7 @@ const {XZLC_User_Data} = require('../user-data-db/xzlc_collections/User')
 const addFriend = async (req,res) => {
     const myId = req.params.id
     const friendId = req.body.friendId
+    const remakeName = req.body.remakeName
     // 1.查询用户
     const friend = await XZLC_User_Data.findOne({userXZLCId:friendId})
     // 查找用户是否有好友列表
@@ -13,7 +14,8 @@ const addFriend = async (req,res) => {
         const data = await XZLC_User_Friend_Data.create({
             userXZLCId:myId,
             userFriend:[{
-                userId:friend.userXZLCId
+                userId:friend.userXZLCId,
+                remakeName: remakeName
             }]
         })
         res.send({
@@ -32,7 +34,8 @@ const addFriend = async (req,res) => {
         const newFriendList = user.userFriend
         // console.log(newFriendList);
         newFriendList.push({
-            userId:friend.userXZLCId
+            userId:friend.userXZLCId,
+            remakeName: remakeName
         })
         // console.log(newFriendList);
         // 找到当前用户 并更新好友列表
