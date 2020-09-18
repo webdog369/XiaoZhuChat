@@ -64,7 +64,11 @@ const searchFriendList = async (req,res) =>{
     }else {
         let newList = []
         for (let key of List.userFriend){
-            newList.push(key.userId)
+            const items = {
+                userId:key.userId,
+                userRemakeName:key.remakeName
+            }
+            newList.push(items)
         }
         res.send({
             result:newList

@@ -18,6 +18,7 @@
         class="searchResult"
         v-for="value in searchResult"
         :key="value.userXZLCId"
+        v-show="srShow"
       >
         <div class="friend">
           <img class="avatar" :src="value.userAvatar">
@@ -29,9 +30,16 @@
             </div>
           </div>
         </div>
-        <span class="add" @click.stop="add">添加</span>
+        <span class="add" @click.stop="goAdd">添加</span>
       </div>
       <div class="errmsg" v-show="noUser">用户不存在</div>
+      <div class="remakeName" v-show="remakeName">
+        <input type="text" placeholder="给好友添加个好记的名字吧~" v-model="rnValue">
+        <button
+          :class="{'active':rnValue.length}"
+          @click.stop="add"
+        >{{rnValue.length?'完成':'暂不添加'}}</button>
+      </div>
     </div>
 </template>
 
@@ -55,7 +63,10 @@ export default {
       value: '',
       placeholder: '输入好友用户名或轻聊号添加...',
       searchResult: [],
-      noUser: false
+      srShow: false,
+      noUser: false,
+      remakeName: false,
+      rnValue: ''
     }
   },
   methods: {
@@ -77,7 +88,6 @@ export default {
         friendId: result
       }
       userSearchOne(data).then(data => {
-        console.log(data)
         if (data.data[0].userName !== undefined) {
           this.searchResult = data.data
           console.log(data)
@@ -86,16 +96,22 @@ export default {
         }
       })
       this.value = ''
+      this.srShow = true
+    },
+    goAdd () {
+      this.remakeName = true
+      this.srShow = false
     },
     add () {
-      console.log(this.searchResult[0].userXZLCId)
       userAddFriend(
         this.currentUser.userXZLCId,
-        { friendId: this.searchResult[0].userXZLCId }
+        {
+          friendId: this.searchResult[0].userXZLCId,
+          remakeName: this.rnValue
+        }
       ).then(data => {
         console.log(data)
         this.setSelectTips([data.data.msg, true])
-        this.searchResult = []
         this.$router.go(-1)
       })
     }
@@ -264,6 +280,43 @@ export default {
     text-align: center;
     color: #333;
     background: #fff;
+  }
+  .remakeName{
+    position: absolute;
+    left: 0;
+    top: 50px;
+    width: 100%;
+    height: 200px;
+    background: #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 15px;
+    input{
+      height: 80px;
+      flex: 1;
+      border:none;
+      background: #eee;
+      font-size: 30px;
+      outline: none;
+      border-bottom: 1px solid #ccc;
+      padding-left: 15px;
+      padding-right: 15px;
+      margin-right: 5px;
+    }
+    button{
+      height: 80px;
+      width: 150px;
+      color: #fff;
+      font-size: 28px;
+      border:none;
+      margin-right: 20px;
+      border-radius: 10px;
+      background: #4886c7;
+      &.active{
+        background: #1082FF;
+      }
+    }
   }
 }
 </style>

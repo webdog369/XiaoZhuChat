@@ -24,10 +24,13 @@ export default {
         for (const key of data.result) {
           // 根据提取出来的好友id 查询到好友最新的详细个人信息
           userSearchOne({
-            friendId: key
+            friendId: key.userId
           }).then(data => {
+            console.log(data)
             // 将查询到的信息push到ContactPersonData中
-            this.ContactPersonData.push(data.data[0])
+            const items = data.data[0]
+            items.remakeName = key.userRemakeName
+            this.ContactPersonData.push(items)
           })
         }
       } else {
