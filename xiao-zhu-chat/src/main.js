@@ -4,13 +4,10 @@ import router from './router'
 import store from './store'
 import fastClick from 'fastclick'
 import './assets/css/base.scss'
-import { Skeleton } from 'vant'
 // import Loading from './components/Loading'
 import SelectTips from './components/SelectTips'
 import Loading from '../src/plugin/Loading'
 import Tips from './components/Tips'
-// 使用骨架屏插件
-Vue.use(Skeleton)
 
 // loading插件
 Vue.use(Loading, {

@@ -26,7 +26,6 @@ export default {
           userSearchOne({
             friendId: key.userId
           }).then(data => {
-            console.log(data)
             // 将查询到的信息push到ContactPersonData中
             const items = data.data[0]
             items.remakeName = key.userRemakeName

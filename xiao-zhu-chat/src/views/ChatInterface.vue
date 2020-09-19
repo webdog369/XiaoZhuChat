@@ -102,29 +102,6 @@ export default {
       this.chatList.push(obj)
       this.value = ''
     }
-    /*    up () {
-      console.log(this.phone)
-      if (this.phone) {
-        setTimeout(() => {
-          this.$refs.chatInterfac.classList.add('up')
-        }, 50)
-      }
-    },
-    down () {
-      if (this.phone) {
-        this.$refs.chatInterfac.classList.remove('up')
-      }
-    }, */
-    /*   enter (el, done) {
-      Velocity(el, 'transition.shrinkIn', { duration: 100 }, function () {
-        done()
-      })
-    },
-    leave (el, done) {
-      Velocity(el, 'transition.fadeOut', { duration: 100 }, function () {
-        done()
-      })
-    } */
   }
 }
 </script>

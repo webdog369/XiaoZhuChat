@@ -1,36 +1,45 @@
 <template>
   <ScrollView ref="scrollView">
-    <div class="information-bar">
+    <div  class="information-bar">
         <div class="items" v-for="(value,index) in listData" :key="index">
-        <i :style="{backgroundImage:`url(${value.userAvatar})`}"></i>
-        <div class="data" @click="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName)">
-          <div class="info">
-            <h2
-              :class="{'card':!value.newMsg}"
-            >{{value.remakeName?value.remakeName:value.userName}}</h2>
-            <span class="msg" v-if="value.newMsg">{{value.newMsg}}</span>
+          <i :style="{backgroundImage:`url(${value.userAvatar})`}"></i>
+          <div class="data" @click="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName)">
+            <div class="info">
+              <h2
+                :class="{'card':!value.newMsg}"
+              >{{value.remakeName?value.remakeName:value.userName}}</h2>
+              <span class="msg" v-if="value.newMsg">{{value.newMsg}}</span>
+            </div>
+            <div class="time" v-if="value.time">{{value.time}}</div>
           </div>
-          <div class="time" v-if="value.time">{{value.time}}</div>
         </div>
-      </div>
-    </div>
+      <van-skeleton
+        title avatar
+        avatar-size="80px"
+        title-width="25%"
+        v-for="i in 12" :key="i" :loading="loading"/>
+    </div >
   </ScrollView>
 </template>
 
 <script>
 import ScrollView from '../components/ScrollView'
+import Vue from 'vue'
+import { Skeleton } from 'vant'
+
+Vue.use(Skeleton)
 export default {
   name: 'InformationBar',
   beforeMount () {
-    console.log(this.listData)
-  },
-  mounted () {
+    // console.log(this.listData)
   },
   components: {
-    ScrollView
+    ScrollView,
+    [Skeleton.name]: Skeleton
   },
   data () {
     return {
+      loading: true
     }
   },
   props: {
@@ -41,6 +50,11 @@ export default {
     }
   },
   watch: {
+    listData () {
+      this.$nextTick(() => {
+        this.loading = false
+      })
+    }
   },
   methods: {
     goChat (id, userName) {
@@ -102,27 +116,16 @@ export default {
       }
     }
   }
-  .items-n{
+}
+  .van-skeleton {
     width: 100%;
-    height: 120px;
-    display: flex;
-    justify-content:start;
-    align-items: center;
-    i{
-      width: 80px;
-      height: 80px;
-      background: #eee;
-      background-size: cover;
-      border-radius: 15px;
-      margin: 0 20px 0 10px;
+    height: 80px;
+    margin-top: 20px;
+    .van-skeleton__avatar.van-skeleton__avatar--round{
+      border-radius: 5px;
     }
-    .data-n{
-      width: 50%;
-      height: 50px;
-      border-bottom: 1px solid #ddd;
-      display: flex;
-      background: #eee;
+    .van-skeleton__content{
+      padding-top: 30px;
     }
   }
-}
 </style>
