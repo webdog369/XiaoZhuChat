@@ -48,6 +48,7 @@
 <script>
 import { signUp, signIn } from '../api/index'
 import { mapActions } from 'vuex'
+import { UserConnection, iKnow } from '../api/SocketApi'
 export default {
   name: 'Sign',
   mounted () {
@@ -151,13 +152,16 @@ export default {
         signIn(obj).then(data => {
           this.setTips(data.data.msg)
           if (data.data.msg === '登录成功') {
-            this.setCurrentUser({
+            const currentUserData = {
               userName: data.data.user.userName,
               userSex: data.data.user.userSex,
               userAvatar: data.data.user.userAvatar,
               userXZLCId: data.data.user.userXZLCId,
               userState: '在线'
-            })
+            }
+            this.setCurrentUser(currentUserData)
+            UserConnection(currentUserData)
+            iKnow()
             this.$router.push('/Chat')
           }
         })

@@ -7,8 +7,13 @@
 
 <script>
 import InformationBar from '../components/InformationBar'
+import { chat, MsgResult } from '../api/SocketApi'
 export default {
   name: 'Chat',
+  mounted () {
+    chat(1000, '在吗')
+    MsgResult()
+  },
   components: {
     InformationBar
   },

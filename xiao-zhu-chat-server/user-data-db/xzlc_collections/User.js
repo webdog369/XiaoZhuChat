@@ -11,6 +11,7 @@ const Schema = new mongoose.Schema({
     userAvatar:{ type: String },
     userSex:{ type: String },
     userXZLCId:{ type: Number },
+    userSocketId:{ type: String },
 });
 
 const XZLC_User_Data = mongoose.model("User",Schema);
