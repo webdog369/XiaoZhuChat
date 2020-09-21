@@ -15,6 +15,9 @@
 <script>
 import ReturnNavBar from '../components/ReturnNavBar'
 import ChatBubble from '../components/ChatBubble'
+import { mapGetters } from 'vuex'
+import { chat } from '../api/SocketApi'
+import { formatTime } from '../tools/tools'
 /* import Velocity from 'velocity-animate'
 import 'velocity-animate/velocity.ui' */
 export default {
@@ -25,81 +28,33 @@ export default {
     ReturnNavBar,
     ChatBubble
   },
+  computed: {
+    ...mapGetters([
+      'currentUser'
+    ])
+  },
   data () {
     return {
       value: '',
       phone: false,
-      chatList: [
-        {
-          name: '哑戏',
-          userId: '001',
-          picUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599549853964&di=9957797346059d196bd2fc16020068e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201707%2F17%2F20170717101419_zR4ta.thumb.700_0.jpeg',
-          say: '你吃饭了没有?',
-          time: '20:57',
-          tag: 'FRIEND_MSG'
-        },
-        {
-          name: '二向箔',
-          userId: '001',
-          picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
-          say: '吃了,吃的面包',
-          time: '20:58',
-          tag: 'MY_MSG'
-        },
-        {
-          name: '二向箔',
-          userId: '001',
-          picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
-          say: '你吃了吗?',
-          time: '20:58',
-          tag: 'MY_MSG'
-        },
-        {
-          name: '哑戏',
-          userId: '001',
-          picUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599549853964&di=9957797346059d196bd2fc16020068e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201707%2F17%2F20170717101419_zR4ta.thumb.700_0.jpeg',
-          say: '刚吃过',
-          time: '20:57',
-          tag: 'FRIEND_MSG'
-        },
-        {
-          name: '二向箔',
-          userId: '001',
-          picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
-          say: '吃的什么呀?',
-          time: '20:58',
-          tag: 'MY_MSG'
-        },
-        {
-          name: '哑戏',
-          userId: '001',
-          picUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1599549853964&di=9957797346059d196bd2fc16020068e8&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201707%2F17%2F20170717101419_zR4ta.thumb.700_0.jpeg',
-          say: '去食堂打的米饭菜 🍚',
-          time: '20:57',
-          tag: 'FRIEND_MSG'
-        },
-        {
-          name: '二向箔',
-          userId: '001',
-          picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
-          say: '哦哦',
-          time: '20:58',
-          tag: 'MY_MSG'
-        }
-      ]
+      chatList: []
     }
   },
   methods: {
     enterMsg (e) {
+      const CurrentTime = formatTime(new Date())
+      console.log(CurrentTime)
       const obj = {
-        name: '二向箔',
-        userId: '001',
-        picUrl: 'https://t9.baidu.com/it/u=2203852750,1534126073&fm=193',
-        say: this.value,
-        time: '20:58',
-        tag: 'MY_MSG'
+        myId: this.currentUser.userXZLCId,
+        msg: this.value,
+        time: CurrentTime
       }
-      this.chatList.push(obj)
+      chat(this.$route.params.userId, obj)
+      this.chatList.push({
+        picUrl: this.currentUser.userAvatar,
+        say: this.value,
+        tag: 'MY_MSG'
+      })
       this.value = ''
     }
   }

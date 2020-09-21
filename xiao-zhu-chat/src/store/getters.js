@@ -8,5 +8,8 @@ export default {
   },
   SelectTips (state) {
     return state.SelectTips
+  },
+  ChatList (state) {
+    return state.ChatList
   }
 }

@@ -7,5 +7,6 @@ export default {
     userSex: '暂无数据',
     userXZLCId: '暂无数据',
     userState: '在线'
-  }
+  },
+  ChatList: []
 }

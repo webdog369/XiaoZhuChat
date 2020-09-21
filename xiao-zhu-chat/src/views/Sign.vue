@@ -48,7 +48,7 @@
 <script>
 import { signUp, signIn } from '../api/index'
 import { mapActions } from 'vuex'
-import { UserConnection, iKnow } from '../api/SocketApi'
+import { UserConnection, iKnow, MsgResult } from '../api/SocketApi'
 export default {
   name: 'Sign',
   mounted () {
@@ -162,6 +162,7 @@ export default {
             this.setCurrentUser(currentUserData)
             UserConnection(currentUserData)
             iKnow()
+            MsgResult()
             this.$router.push('/Chat')
           }
         })

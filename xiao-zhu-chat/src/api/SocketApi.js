@@ -1,4 +1,5 @@
 import io from 'weapp.socket.io'
+import store from '../store'
 const socket = io('http://localhost:3001')
 // 注册一个登录事件 将用户信息发送给服务器
 export const UserConnection = (userData) => {
@@ -21,6 +22,6 @@ export const chat = (id, data) => {
 
 export const MsgResult = () => {
   socket.on('sendTo', data => {
-    console.log(data)
+    store.commit('SET_CHAT_LIST', data)
   })
 }

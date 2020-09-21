@@ -1,7 +1,8 @@
 import {
   SET_TIPS,
   SET_CURRENT_USER,
-  SET_SELECT_TIPS
+  SET_SELECT_TIPS,
+  SET_CHAT_LIST
 } from './mutations-type'
 export default {
   [SET_TIPS] (state, payload) {
@@ -15,5 +16,8 @@ export default {
   },
   [SET_SELECT_TIPS] (state, payload) {
     state.SelectTips = payload
+  },
+  [SET_CHAT_LIST] (state, payload) {
+    state.ChatList.unshift(payload)
   }
 }

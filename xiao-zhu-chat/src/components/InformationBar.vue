@@ -31,7 +31,9 @@ Vue.use(Skeleton)
 export default {
   name: 'InformationBar',
   beforeMount () {
-    // console.log(this.listData)
+  },
+  beforeUpdate () {
+    console.log(this.listData)
   },
   components: {
     ScrollView,
@@ -50,7 +52,7 @@ export default {
     }
   },
   watch: {
-    listData () {
+    listData (n) {
       this.$nextTick(() => {
         this.loading = false
       })
