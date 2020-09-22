@@ -44,50 +44,10 @@ io.on('connection',socket =>{
         }
         // 私发给指定用户
         socket.to(friendData.userSocketId).emit('sendTo',msg)
-
-        // 将本条聊天数据存储到用户的数据库中
-        const myData = await XZLC_User_Chat_List.findOne({
-            userXZLCId:data.msg.myId
-        })
-        // 如果不存在 说明该用户还没有任何聊天记录 则需要创建一条与该好友的聊天记录
-        if (myData === null){
-            const newData = XZLC_User_Chat_List.create({
-                userXZLCId:data.msg.myId,
-                chatLists:[
-                    {
-                        friendId:data.userId,
-                        chats:[msg]
-                    }
-                ]
-            })
-        }else {
-            // 若找到了该好友 则需要更新聊天数据
-            let oldObj = {}
-            // 遍历找出当前好友的所有聊天数据 存储到oldObj中
-            // 此处需要新建与新好友的聊天记录 休息吧
-            for (let key of myData.chatLists){
-                if (key.friendId == data.userId){
-                    console.log(key);
-                    oldObj = key
-                    break
-                }
-            }
-            // console.log(oldObj);
-            /*    // 给oldObj添加一条新数据
-               oldObj.chats.unshift(msg)
-             // console.log(oldObj);
-                // 再次遍历找出当前用户的所有聊天记录 把与该好友的聊天记录更新替换
-                myData.chatLists.map((value,index)=>{
-                    if (value.friendId == oldObj.friendId){
-                        console.log(myData.chatLists[index])
-                        // myData.chatLists[index] = oldObj
-                    }
-                })
-                // 调用数据库更新数据
-                const pushData = await XZLC_User_Chat_List.findOneAndUpdate({
-                    userXZLCId:data.msg.myId
-                },myData)*/
-        }
+        // 把聊天数据存储到我的数据库中
+        await SaveChatList(data.msg.myId, data.userId,msg)
+        // 在好友的数据库中存同样一份
+        await SaveChatList(data.userId,data.msg.myId,msg)
     })
 
 
@@ -97,5 +57,44 @@ io.on('connection',socket =>{
         console.log('有用户断开了');
     })
 })
+
+// 存储聊天数据的方法
+ const SaveChatList = async (myId,friendId,msg) => {
+            // 将本条聊天数据存储到用户的数据库中
+            const myData = await XZLC_User_Chat_List.findOne({
+                userXZLCId:myId
+            })
+            // 如果不存在 说明该用户还没有任何聊天记录 则需要创建一条与该好友的聊天记录
+            if (myData === null){
+                const newData = XZLC_User_Chat_List.create({
+                    userXZLCId:myId,
+                    chatLists:[
+                        {
+                            friendId:friendId,
+                            chats:[msg]
+                        }
+                    ]
+                })
+            }else {
+                // 若找到了用户的聊天数据 再找与当前好友是否有聊天数据
+                for (let key of myData.chatLists){
+                    // 若找到了 此处需要新建与新好友的聊天记录
+                    if (key.friendId == friendId){
+                        key.chats.unshift(msg)
+                    }else {
+                        // 若没找到 就新建一条数据
+                        myData.chatLists.unshift({
+                            friendId:friendId,
+                            chats:[msg]
+                        })
+                        break
+                    }
+                }
+                // 调用数据库更新数据
+                const pushData = await XZLC_User_Chat_List.findOneAndUpdate({
+                    userXZLCId:myId
+                },myData)
+            }
+        }
 
 
