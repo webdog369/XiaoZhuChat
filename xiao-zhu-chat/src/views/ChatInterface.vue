@@ -18,11 +18,34 @@ import ChatBubble from '../components/ChatBubble'
 import { mapGetters } from 'vuex'
 import { chat } from '../api/SocketApi'
 import { formatTime } from '../tools/tools'
+import { userSearchOne } from '../api/index'
 /* import Velocity from 'velocity-animate'
 import 'velocity-animate/velocity.ui' */
 export default {
   name: 'ChatInterface',
   mounted () {
+    this.$nextTick(() => {
+      const userId = parseInt(this.$route.params.userId)
+      for (const key of this.ChatList) {
+        if (key.friendId === userId) {
+          this.chatList = key.chats
+        }
+      }
+      userSearchOne({
+        friendId: parseInt(this.$route.params.userId)
+      }).then(data => {
+        this.friendData = data.data[0]
+        this.chatList.map((value, index) => {
+          if (value.friendId === this.friendData.userXZLCId) {
+            value.userAvatar = this.friendData.userAvatar
+            value.tag = 'FRIEND_MSG'
+          } else {
+            value.userAvatar = this.currentUser.userAvatar
+            value.tag = 'MY_MSG'
+          }
+        })
+      })
+    })
   },
   components: {
     ReturnNavBar,
@@ -30,20 +53,26 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'currentUser'
+      'currentUser',
+      'ChatList'
     ])
   },
   data () {
     return {
       value: '',
       phone: false,
-      chatList: []
+      chatList: [],
+      friendData: {}
+    }
+  },
+  watch: {
+    ChatList () {
+
     }
   },
   methods: {
     enterMsg (e) {
       const CurrentTime = formatTime(new Date())
-      console.log(CurrentTime)
       const obj = {
         myId: this.currentUser.userXZLCId,
         msg: this.value,
@@ -51,8 +80,8 @@ export default {
       }
       chat(this.$route.params.userId, obj)
       this.chatList.push({
-        picUrl: this.currentUser.userAvatar,
-        say: this.value,
+        userAvatar: this.currentUser.userAvatar,
+        friendMsg: this.value,
         tag: 'MY_MSG'
       })
       this.value = ''

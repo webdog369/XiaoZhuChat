@@ -8,7 +8,7 @@ export const UserConnection = (userData) => {
 // 接收一个服务器对登录事件的反馈
 export const iKnow = () => {
   socket.on('iKnow', msg => {
-    console.log(msg)
+    store.commit('SET_CHAT_LIST', msg.chatLists)
   })
 }
 

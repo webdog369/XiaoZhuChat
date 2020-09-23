@@ -33,7 +33,7 @@ export default {
   beforeMount () {
   },
   beforeUpdate () {
-    console.log(this.listData)
+    // console.log(this.listData)
   },
   components: {
     ScrollView,

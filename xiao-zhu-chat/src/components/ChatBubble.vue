@@ -12,18 +12,18 @@
              v-if="value.tag==='FRIEND_MSG'"
         >
           <div class="avatar"
-          :style="{backgroundImage:`url(${value.picUrl})`}"
+          :style="{backgroundImage:`url(${value.userAvatar})`}"
           ></div>
-          <div class="bubble">{{value.say}}</div>
+          <div class="bubble">{{value.friendMsg}}</div>
         </div>
         <!--自己发的信息-->
         <div class="my-msg"
         v-if="value.tag==='MY_MSG'"
         >
           <div class="avatar"
-          :style="{backgroundImage:`url(${value.picUrl})`}"
+          :style="{backgroundImage:`url(${value.userAvatar})`}"
           ></div>
-          <div class="bubble">{{value.say}}</div>
+          <div class="bubble">{{value.friendMsg}}</div>
         </div>
       </div>
     </div>
@@ -46,6 +46,7 @@ export default {
   watch: {
     chatList (n) {
       this.$nextTick(() => {
+        this.chatList = n
         const i = n.length - 1
         const boxHeight = this.$refs.scrollBox.clientHeight
         const elOffsetTop = this.$refs.item[i].offsetTop
@@ -79,6 +80,8 @@ export default {
         .friend-msg{
           width: 100%;
           display: flex;
+          margin-top: 30px;
+          margin-bottom: 20px;
           .avatar{
             width: 80px;
             height: 80px;

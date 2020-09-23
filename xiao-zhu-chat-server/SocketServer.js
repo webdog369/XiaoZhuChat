@@ -18,14 +18,19 @@ server.listen(3001,()=>{
 
 io.on('connection',socket =>{
     socket.on('UserConnection',async msg => {
-        // 用户登录成功后 将用户当前的socketI保存到数据库中
+        // 1.用户登录成功后 将用户当前的socketI保存到数据库中
         const data = await XZLC_User_Data.findOneAndUpdate(
             {userXZLCId:msg.userXZLCId},
             {userSocketId:socket.id}
             )
+        //2.查找用户的所有聊天记录 发送给用户
+        const userChatLists = await XZLC_User_Chat_List.findOne({
+            userXZLCId:msg.userXZLCId
+        })
         // 发送一个登录成功事件给客户端
         socket.emit('iKnow',{
-            msg:`好的,服务器已经知道${msg.userName}登录了!`
+            msg:`好的,服务器已经知道${msg.userName}登录了!`,
+            chatLists:userChatLists.chatLists
         })
     })
 

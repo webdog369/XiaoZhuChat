@@ -18,6 +18,14 @@ export default {
     state.SelectTips = payload
   },
   [SET_CHAT_LIST] (state, payload) {
-    state.ChatList.unshift(payload)
+    if (!state.ChatList.length) {
+      state.ChatList = payload
+    } else {
+      for (const key of state.ChatList) {
+        if (key.friendId === payload.friendId) {
+          key.chats.unshift(payload)
+        }
+      }
+    }
   }
 }
