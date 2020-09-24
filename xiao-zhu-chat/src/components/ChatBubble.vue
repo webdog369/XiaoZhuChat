@@ -35,12 +35,23 @@
 import ScrollView from '../components/ScrollView'
 export default {
   name: 'ChatBubble',
+  created () {
+    console.log('我创建完成了')
+  },
   mounted () {
+    console.log(this.chatList)
+    console.log('我渲染完成了')
   },
   updated () {
+    console.log('我更新了')
   },
   components: {
     ScrollView
+  },
+  data () {
+    return {
+      list: []
+    }
   },
   props: ['chatList'],
   watch: {

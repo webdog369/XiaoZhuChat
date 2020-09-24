@@ -22,6 +22,7 @@ export const chat = (id, data) => {
 
 export const MsgResult = () => {
   socket.on('sendTo', data => {
+    console.log(data)
     store.commit('SET_CHAT_LIST', data)
   })
 }

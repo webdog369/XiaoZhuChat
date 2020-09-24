@@ -24,10 +24,16 @@ io.on('connection',socket =>{
             {userSocketId:socket.id}
             )
         //2.查找用户的所有聊天记录 发送给用户
-        const userChatLists = await XZLC_User_Chat_List.findOne({
+        let userChatLists = await XZLC_User_Chat_List.findOne({
             userXZLCId:msg.userXZLCId
         })
         // 发送一个登录成功事件给客户端
+        if (userChatLists === null){
+            userChatLists = {
+                userXZLCId:msg.userXZLCId,
+                chatLists:[]
+            }
+        }
         socket.emit('iKnow',{
             msg:`好的,服务器已经知道${msg.userName}登录了!`,
             chatLists:userChatLists.chatLists
@@ -85,7 +91,7 @@ io.on('connection',socket =>{
                 for (let key of myData.chatLists){
                     // 若找到了 此处需要新建与新好友的聊天记录
                     if (key.friendId == friendId){
-                        key.chats.unshift(msg)
+                        key.chats.push(msg)
                     }else {
                         // 若没找到 就新建一条数据
                         myData.chatLists.unshift({

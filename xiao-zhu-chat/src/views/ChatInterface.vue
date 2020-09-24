@@ -23,28 +23,10 @@ import { userSearchOne } from '../api/index'
 import 'velocity-animate/velocity.ui' */
 export default {
   name: 'ChatInterface',
-  mounted () {
+  created () {
+    // 初次进入联系人列表时 格式化数据库中的聊天数据
     this.$nextTick(() => {
-      const userId = parseInt(this.$route.params.userId)
-      for (const key of this.ChatList) {
-        if (key.friendId === userId) {
-          this.chatList = key.chats
-        }
-      }
-      userSearchOne({
-        friendId: parseInt(this.$route.params.userId)
-      }).then(data => {
-        this.friendData = data.data[0]
-        this.chatList.map((value, index) => {
-          if (value.friendId === this.friendData.userXZLCId) {
-            value.userAvatar = this.friendData.userAvatar
-            value.tag = 'FRIEND_MSG'
-          } else {
-            value.userAvatar = this.currentUser.userAvatar
-            value.tag = 'MY_MSG'
-          }
-        })
-      })
+      this.formatChatList()
     })
   },
   components: {
@@ -66,25 +48,90 @@ export default {
     }
   },
   watch: {
-    ChatList () {
-
+    // 当vuex中的ChatList发生变化时 若旧的值是空 则重新处理
+    ChatList (n, o) {
+      if (!o.length) {
+        this.formatChatList()
+      }
     }
   },
   methods: {
+    // 发送信息
     enterMsg (e) {
+      // 获取当前时间
       const CurrentTime = formatTime(new Date())
+      // 定义一个信息体
       const obj = {
         myId: this.currentUser.userXZLCId,
         msg: this.value,
         time: CurrentTime
       }
+      // 调用chat方法将信息发送给socket服务器
       chat(this.$route.params.userId, obj)
-      this.chatList.push({
-        userAvatar: this.currentUser.userAvatar,
-        friendMsg: this.value,
-        tag: 'MY_MSG'
-      })
+      // 获取到当前好友的id
+      const userId = parseInt(this.$route.params.userId)
+      // 判断vuex中用户聊天记录是否存在
+      if (this.ChatList.length) {
+        // 若存在 则遍历找出当前好友的聊天记录
+        for (const key of this.ChatList) {
+          if (key.friendId === userId) {
+            // 找到后将当前信息添加到聊天记录列表中
+            key.chats.push({
+              userAvatar: this.currentUser.userAvatar,
+              friendMsg: this.value,
+              time: CurrentTime,
+              tag: 'MY_MSG'
+            })
+          } else {
+            // 若没有找到 则创建一个与该好友的聊天记录对象 并将该条信息添加到聊天记录中
+            this.ChatList.push({
+              friendId: userId,
+              chats: [{
+                userAvatar: this.currentUser.userAvatar,
+                friendMsg: this.value,
+                time: CurrentTime,
+                tag: 'MY_MSG'
+              }]
+            })
+          }
+        }
+        // 若该用户没有与如何好友的聊天记录 则在vuex中给当前好友添加一个聊天记录对象
+      } else {
+        this.ChatList.push({
+          friendId: userId,
+          chats: [{
+            userAvatar: this.currentUser.userAvatar,
+            friendMsg: this.value,
+            time: CurrentTime,
+            tag: 'MY_MSG'
+          }]
+        })
+      }
+      // 输入完信息后清空表单
       this.value = ''
+    },
+    // 将聊天信息处理成聊天气泡能识别的格式
+    formatChatList () {
+      const userId = parseInt(this.$route.params.userId)
+      for (const key of this.ChatList) {
+        if (key.friendId === userId) {
+          this.chatList = key.chats
+        }
+      }
+      userSearchOne({
+        friendId: parseInt(this.$route.params.userId)
+      }).then(data => {
+        this.friendData = data.data[0]
+        this.chatList.map((value, index) => {
+          if (value.friendId === this.friendData.userXZLCId) {
+            value.userAvatar = this.friendData.userAvatar
+            value.tag = 'FRIEND_MSG'
+          } else {
+            value.userAvatar = this.currentUser.userAvatar
+            value.tag = 'MY_MSG'
+          }
+        })
+      })
     }
   }
 }
