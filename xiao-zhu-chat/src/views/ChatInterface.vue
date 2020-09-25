@@ -29,6 +29,9 @@ export default {
       this.formatChatList()
     })
   },
+  mounted () {
+    console.log('父组件完成了')
+  },
   components: {
     ReturnNavBar,
     ChatBubble
@@ -67,33 +70,40 @@ export default {
         time: CurrentTime
       }
       // 调用chat方法将信息发送给socket服务器
+      console.log('发送数据了,赶紧存')
       chat(this.$route.params.userId, obj)
       // 获取到当前好友的id
       const userId = parseInt(this.$route.params.userId)
       // 判断vuex中用户聊天记录是否存在
       if (this.ChatList.length) {
-        // 若存在 则遍历找出当前好友的聊天记录
-        for (const key of this.ChatList) {
-          if (key.friendId === userId) {
-            // 找到后将当前信息添加到聊天记录列表中
-            key.chats.push({
+        let index = 0
+        let flag = false
+        this.ChatList.map((v, i) => {
+          if (v.friendId === userId) {
+            // 查找是否存在与当前好友的聊天记录 找到后将索引存储起来
+            flag = true
+            index = i
+          }
+        })
+        if (flag) {
+          // 找到后将当前信息添加到聊天记录列表中
+          this.ChatList[index].chats.push({
+            userAvatar: this.currentUser.userAvatar,
+            friendMsg: this.value,
+            time: CurrentTime,
+            tag: 'MY_MSG'
+          })
+        } else {
+          // 若没有找到 则创建一个与该好友的聊天记录对象 并将该条信息添加到聊天记录中
+          this.ChatList.push({
+            friendId: userId,
+            chats: [{
               userAvatar: this.currentUser.userAvatar,
               friendMsg: this.value,
               time: CurrentTime,
               tag: 'MY_MSG'
-            })
-          } else {
-            // 若没有找到 则创建一个与该好友的聊天记录对象 并将该条信息添加到聊天记录中
-            this.ChatList.push({
-              friendId: userId,
-              chats: [{
-                userAvatar: this.currentUser.userAvatar,
-                friendMsg: this.value,
-                time: CurrentTime,
-                tag: 'MY_MSG'
-              }]
-            })
-          }
+            }]
+          })
         }
         // 若该用户没有与如何好友的聊天记录 则在vuex中给当前好友添加一个聊天记录对象
       } else {

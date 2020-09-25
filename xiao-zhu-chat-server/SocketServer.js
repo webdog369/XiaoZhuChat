@@ -53,6 +53,7 @@ io.on('connection',socket =>{
             friendMsg:data.msg.msg,
             time:data.msg.time
         }
+        console.log(msg,'===');
         // 私发给指定用户
         socket.to(friendData.userSocketId).emit('sendTo',msg)
         // 把聊天数据存储到我的数据库中
@@ -88,19 +89,24 @@ io.on('connection',socket =>{
                 })
             }else {
                 // 若找到了用户的聊天数据 再找与当前好友是否有聊天数据
-                for (let key of myData.chatLists){
-                    // 若找到了 此处需要新建与新好友的聊天记录
-                    if (key.friendId == friendId){
-                        key.chats.push(msg)
-                    }else {
-                        // 若没找到 就新建一条数据
-                        myData.chatLists.unshift({
-                            friendId:friendId,
-                            chats:[msg]
-                        })
-                        break
+                let flag = false
+                let index = 0
+                myData.chatLists.map((v,i)=>{
+                    if (v.friendId == friendId){
+                        flag = true
+                        index = i
                     }
+                })
+
+                if (flag){
+                    myData.chatLists[index].chats.push(msg)
+                }else {
+                    myData.chatLists.unshift({
+                        friendId:friendId,
+                        chats:[msg]
+                    })
                 }
+
                 // 调用数据库更新数据
                 const pushData = await XZLC_User_Chat_List.findOneAndUpdate({
                     userXZLCId:myId

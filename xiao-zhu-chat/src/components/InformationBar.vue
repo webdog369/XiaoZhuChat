@@ -1,9 +1,9 @@
 <template>
   <ScrollView ref="scrollView">
     <div  class="information-bar">
-        <div class="items" v-for="(value,index) in listData" :key="index">
+        <div class="items" v-for="(value) in listData" :key="value.userName">
           <i :style="{backgroundImage:`url(${value.userAvatar})`}"></i>
-          <div class="data" @click="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName)">
+          <div class="data" @click.stop="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName)">
             <div class="info">
               <h2
                 :class="{'card':!value.newMsg}"

@@ -3,7 +3,7 @@
       <ScrollView ref="scrollView">
       <div class="chat-bubble">
       <div class="chat-list"
-           v-for="(value, index) in chatList"
+           v-for="(value, index) in this.chatList"
            :key="index"
            ref="item"
       >
@@ -39,23 +39,38 @@ export default {
     console.log('我创建完成了')
   },
   mounted () {
-    console.log(this.chatList)
+    // setTimeout(() => {
+    //   // this.$refs.scrollView.refresh()
+    //   console.log(this.chatList)
+    // }, 10)
+
     console.log('我渲染完成了')
   },
   updated () {
     console.log('我更新了')
+    // this.$refs.scrollView.refresh()
   },
   components: {
     ScrollView
   },
   data () {
-    return {
-      list: []
+    return {}
+  },
+  props: {
+    chatList: {
+      type: Array,
+      default: () => [{
+        userAvatar: '',
+        friendMsg: '',
+        time: '',
+        tag: ''
+      }],
+      require: true
     }
   },
-  props: ['chatList'],
   watch: {
     chatList (n) {
+      console.log('watch执行了')
       this.$nextTick(() => {
         this.chatList = n
         const i = n.length - 1
@@ -66,6 +81,7 @@ export default {
         if (elOffsetTop > boxHeight) {
           this.$refs.scrollView.scrollTo(0, -y, 50)
         }
+        this.$refs.scrollView.refresh()
         // 废弃方法:原因--如果使用scrollIntoView需要overflow:auto 会造成页面偏移
         // this.$refs.scrollView.refresh()
         // this.$refs.item[i].scrollIntoView(false)
