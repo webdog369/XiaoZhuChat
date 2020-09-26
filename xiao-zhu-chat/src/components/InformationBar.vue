@@ -10,7 +10,10 @@
               >{{value.remakeName?value.remakeName:value.userName}}</h2>
               <span class="msg" v-if="value.newMsg">{{value.newMsg}}</span>
             </div>
-            <div class="time" v-if="value.time">{{value.time}}</div>
+            <div class="right">
+              <div class="time" v-if="value.time">{{value.time}}</div>
+              <span class="tips" v-if="value.tips">3</span>
+            </div>
           </div>
         </div>
       <van-skeleton
@@ -108,13 +111,33 @@ export default {
           color: #888;
         }
       }
-      .time{
-        width: 80px;
-        height: 80px;
-        line-height: 80px;
-        margin-right: 5px;
-        font-size: 24px;
-        color: #666;
+      .right{
+        width: 100px;
+        /*background: orange;*/
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-right: 15px;
+        .time{
+          width: 80px;
+          margin-right: 5px;
+          font-size: 24px;
+          color: #666;
+          text-align: center;
+          /*background: #000;*/
+        }
+        .tips{
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
+          background: #f55454;
+          border-radius: 50%;
+          text-align: center;
+          color: #fff;
+          font-size: 20px;
+          margin-top: 5px;
+        }
       }
     }
   }

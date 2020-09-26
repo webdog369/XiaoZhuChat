@@ -13,6 +13,10 @@
 import InformationBar from '../components/InformationBar'
 import { userFriendList, userSearchOne } from '../api/index'
 import { mapGetters } from 'vuex'
+import Vue from 'vue'
+import { IndexBar, IndexAnchor } from 'vant'
+Vue.use(IndexBar)
+Vue.use(IndexAnchor)
 export default {
   name: 'ContactPerson',
   beforeMount () {
@@ -40,7 +44,9 @@ export default {
     })
   },
   components: {
-    InformationBar
+    InformationBar,
+    [IndexBar.name]: IndexBar,
+    [IndexAnchor.name]: IndexAnchor
   },
   computed: {
     ...mapGetters([

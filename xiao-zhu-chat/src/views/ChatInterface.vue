@@ -32,6 +32,9 @@ export default {
   mounted () {
     console.log('父组件完成了')
   },
+  updated () {
+    console.log('父组件更新了')
+  },
   components: {
     ReturnNavBar,
     ChatBubble
@@ -45,7 +48,6 @@ export default {
   data () {
     return {
       value: '',
-      phone: false,
       chatList: [],
       friendData: {}
     }
@@ -53,6 +55,7 @@ export default {
   watch: {
     // 当vuex中的ChatList发生变化时 若旧的值是空 则重新处理
     ChatList (n, o) {
+      // this.formatChatList()
       if (!o.length) {
         this.formatChatList()
       }

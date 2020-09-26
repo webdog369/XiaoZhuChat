@@ -54,7 +54,9 @@ export default {
     ScrollView
   },
   data () {
-    return {}
+    return {
+      flag: false
+    }
   },
   props: {
     chatList: {
@@ -70,8 +72,8 @@ export default {
   },
   watch: {
     chatList (n) {
-      console.log('watch执行了')
       this.$nextTick(() => {
+        this.flag = true
         this.chatList = n
         const i = n.length - 1
         const boxHeight = this.$refs.scrollBox.clientHeight
