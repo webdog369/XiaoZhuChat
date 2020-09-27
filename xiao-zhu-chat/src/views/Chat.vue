@@ -1,6 +1,9 @@
 <template>
     <div class="chat-page">
-        <InformationBar :listData="ChatLists"></InformationBar>
+        <InformationBar
+          :listData="ChatLists"
+          @changeTips="changeTips"
+        ></InformationBar>
       <router-view></router-view>
     </div>
 </template>
@@ -32,12 +35,16 @@ export default {
   },
   watch: {
     ChatList (n) {
+      console.log(n, '===')
       this.$nextTick(() => {
         this.formatData()
       })
     }
   },
   methods: {
+    changeTips (i) {
+      this.ChatLists[i].tips = 0
+    },
     formatData () {
       // 遍历当前用户的聊天记录列表
       for (const key of this.ChatList) {
@@ -63,7 +70,8 @@ export default {
               remakeName: remakeName,
               userAvatar: data.data[0].userAvatar,
               newMsg: lastItem.friendMsg,
-              time: lastItem.time.substr(11, 5)
+              time: lastItem.time.substr(11, 5),
+              tips: 1
             })
           })
         })

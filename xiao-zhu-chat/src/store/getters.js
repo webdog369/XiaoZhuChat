@@ -11,5 +11,8 @@ export default {
   },
   ChatList (state) {
     return state.ChatList
+  },
+  newMsgNum (state) {
+    return state.newMsgNum
   }
 }

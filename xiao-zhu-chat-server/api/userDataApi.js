@@ -82,6 +82,9 @@ const userUpData = async (req,res) => {
         case 'userSex' :
             newData = {userSex:value}
             break
+        case 'disconnectedTime' :
+            newData = {disconnectedTime:value}
+            break
     }
     const data = await XZLC_User_Data.updateOne({
         userXZLCId:id

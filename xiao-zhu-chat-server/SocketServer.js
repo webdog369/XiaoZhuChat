@@ -17,20 +17,24 @@ server.listen(3001,()=>{
 })
 
 io.on('connection',socket =>{
+    let userId = null
     socket.on('UserConnection',async msg => {
+        // 全局保存一下当前用户的id
+        userId = msg.userXZLCId
+
         // 1.用户登录成功后 将用户当前的socketI保存到数据库中
         const data = await XZLC_User_Data.findOneAndUpdate(
-            {userXZLCId:msg.userXZLCId},
+            {userXZLCId:userId},
             {userSocketId:socket.id}
             )
         //2.查找用户的所有聊天记录 发送给用户
         let userChatLists = await XZLC_User_Chat_List.findOne({
-            userXZLCId:msg.userXZLCId
+            userXZLCId:userId
         })
         // 发送一个登录成功事件给客户端
         if (userChatLists === null){
             userChatLists = {
-                userXZLCId:msg.userXZLCId,
+                userXZLCId:userId,
                 chatLists:[]
             }
         }
@@ -53,7 +57,6 @@ io.on('connection',socket =>{
             friendMsg:data.msg.msg,
             time:data.msg.time
         }
-        console.log(msg,'===');
         // 私发给指定用户
         socket.to(friendData.userSocketId).emit('sendTo',msg)
         // 把聊天数据存储到我的数据库中
@@ -65,8 +68,14 @@ io.on('connection',socket =>{
 
 
     // 用户断开连接
-    socket.on('disconnect' ,data =>{
-        console.log('有用户断开了');
+    socket.on('disconnect' ,async data =>{
+        const time = new Date().getTime()
+        const user = await XZLC_User_Data.findOneAndUpdate({
+            userXZLCId:userId
+        },{
+            disconnectedTime:time
+        })
+        console.log('有用户断开了',time);
     })
 })
 

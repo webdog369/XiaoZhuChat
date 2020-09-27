@@ -8,5 +8,6 @@ export default {
     userXZLCId: '暂无数据',
     userState: '在线'
   },
-  ChatList: []
+  ChatList: [],
+  newMsgNum: 0
 }

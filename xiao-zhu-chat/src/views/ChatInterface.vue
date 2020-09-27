@@ -18,7 +18,7 @@ import ChatBubble from '../components/ChatBubble'
 import { mapGetters } from 'vuex'
 import { chat } from '../api/SocketApi'
 import { formatTime } from '../tools/tools'
-import { userSearchOne } from '../api/index'
+import { userSearchOne, userUpData } from '../api/index'
 /* import Velocity from 'velocity-animate'
 import 'velocity-animate/velocity.ui' */
 export default {
@@ -34,6 +34,13 @@ export default {
   },
   updated () {
     console.log('父组件更新了')
+  },
+  beforeDestroy () {
+    // 在用户离开聊天窗口时记录离开时间
+    userUpData(parseInt(this.currentUser.userXZLCId), {
+      key: 'disconnectedTime',
+      value: new Date().getTime()
+    })
   },
   components: {
     ReturnNavBar,

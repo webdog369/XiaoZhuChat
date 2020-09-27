@@ -1,9 +1,12 @@
 <template>
   <ScrollView ref="scrollView">
     <div  class="information-bar">
-        <div class="items" v-for="(value) in listData" :key="value.userName">
+        <div
+          class="items" v-for="(value, index) in listData"
+          :key="value.userName"
+        >
           <i :style="{backgroundImage:`url(${value.userAvatar})`}"></i>
-          <div class="data" @click.stop="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName)">
+          <div class="data" @click.stop="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName,value.tips,index)">
             <div class="info">
               <h2
                 :class="{'card':!value.newMsg}"
@@ -12,7 +15,7 @@
             </div>
             <div class="right">
               <div class="time" v-if="value.time">{{value.time}}</div>
-              <span class="tips" v-if="value.tips">3</span>
+              <span class="tips" v-if="value.tips">{{value.tips}}</span>
             </div>
           </div>
         </div>
@@ -29,6 +32,7 @@
 import ScrollView from '../components/ScrollView'
 import Vue from 'vue'
 import { Skeleton } from 'vant'
+import { mapActions, mapGetters } from 'vuex'
 
 Vue.use(Skeleton)
 export default {
@@ -41,6 +45,11 @@ export default {
   components: {
     ScrollView,
     [Skeleton.name]: Skeleton
+  },
+  computed: {
+    ...mapGetters([
+      'newMsgNum'
+    ])
   },
   data () {
     return {
@@ -62,7 +71,14 @@ export default {
     }
   },
   methods: {
-    goChat (id, userName) {
+    ...mapActions([
+      'setNewMsgNum'
+    ]),
+    goChat (id, userName, tips, index) {
+      this.$emit('changeTips', index)
+      // 获取到总的未读消息数 利用总的未读消息数减去当前点击用户的未读消息数
+      const value = this.newMsgNum - tips
+      this.setNewMsgNum(value)
       this.$router.push({ path: `/user/${id}`, query: { userName: userName } })
     }
   }
@@ -70,6 +86,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  @import "../assets/css/mixin";
 .information-bar{
   position: relative;
   left: 0;
@@ -98,6 +115,7 @@ export default {
       justify-content: space-between;
       align-items: center;
       .info{
+        width: 100%;
         h2{
           font-size: 28px;
           color: #111;
@@ -109,6 +127,7 @@ export default {
         .msg{
           font-size: 23px;
           color: #888;
+          @include clamp(1)
         }
       }
       .right{
@@ -131,11 +150,11 @@ export default {
           width: 30px;
           height: 30px;
           line-height: 30px;
-          background: #f55454;
+          background: rgb(229,87,76);
           border-radius: 50%;
           text-align: center;
           color: #fff;
-          font-size: 20px;
+          font-size: 18px;
           margin-top: 5px;
         }
       }

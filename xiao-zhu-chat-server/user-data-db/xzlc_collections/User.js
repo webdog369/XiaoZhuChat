@@ -12,6 +12,7 @@ const Schema = new mongoose.Schema({
     userSex:{ type: String },
     userXZLCId:{ type: Number },
     userSocketId:{ type: String },
+    disconnectedTime:{ type: Number}
 });
 
 const XZLC_User_Data = mongoose.model("User",Schema);

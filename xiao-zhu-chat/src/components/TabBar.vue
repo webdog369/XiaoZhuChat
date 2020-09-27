@@ -1,14 +1,17 @@
 <template>
 <div class="tabbar">
   <router-link tag="div" class="item" to="/Chat">
+    <b v-if="this.newMsgNum">{{this.newMsgNum}}</b>
     <i></i>
     <span>聊天</span>
   </router-link>
   <router-link tag="div" class="item" to="/ContactPerson">
+    <b class="no-text"></b>
     <i></i>
     <span>联系人</span>
   </router-link>
   <router-link tag="div" class="item" to="/Moments">
+    <b class="no-text"></b>
     <i></i>
     <span>圈子</span>
   </router-link>
@@ -20,8 +23,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: 'TabBar'
+  name: 'TabBar',
+  computed: {
+    ...mapGetters([
+      'newMsgNum'
+    ])
+  }
 }
 </script>
 
@@ -40,6 +49,26 @@ export default {
   justify-content: space-around;
   z-index: 999;
   .item{
+    position: relative;
+    b{
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: -15px;
+      width: 35px;
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      border-radius: 50%;
+      background:  rgb(229,87,76);
+      font-style: normal;
+      font-size: 20px;
+      color: #fff;
+      &.no-text{
+        width: 15px;
+        height: 15px;
+      }
+    }
     i{
       display:block;
       width: 50px;
