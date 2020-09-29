@@ -3,7 +3,8 @@ import {
   SET_CURRENT_USER,
   SET_SELECT_TIPS,
   SET_CHAT_LIST,
-  SET_NEW_MSG_NUM
+  SET_NEW_MSG_NUM,
+  SET_CURRENT_CHATTING_ID
 } from './mutations-type'
 export default {
   setTips ({ commit }, payload) {
@@ -20,5 +21,8 @@ export default {
   },
   setNewMsgNum ({ commit }, payload) {
     commit(SET_NEW_MSG_NUM, payload)
+  },
+  setCurrentChattingId ({ commit }, payload) {
+    commit(SET_CURRENT_CHATTING_ID, payload)
   }
 }

@@ -15,7 +15,7 @@
 <script>
 import ReturnNavBar from '../components/ReturnNavBar'
 import ChatBubble from '../components/ChatBubble'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { chat } from '../api/SocketApi'
 import { formatTime } from '../tools/tools'
 import { userSearchOne, userUpData } from '../api/index'
@@ -41,6 +41,8 @@ export default {
       key: 'disconnectedTime',
       value: new Date().getTime()
     })
+    // 将vuex中当前正在聊天用户的id清空
+    this.setCurrentChattingId(null)
   },
   components: {
     ReturnNavBar,
@@ -69,6 +71,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'setCurrentChattingId'
+    ]),
     // 发送信息
     enterMsg (e) {
       // 获取当前时间

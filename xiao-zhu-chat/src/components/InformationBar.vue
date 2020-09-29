@@ -72,13 +72,15 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setNewMsgNum'
+      'setNewMsgNum',
+      'setCurrentChattingId'
     ]),
     goChat (id, userName, tips, index) {
       this.$emit('changeTips', index)
       // 获取到总的未读消息数 利用总的未读消息数减去当前点击用户的未读消息数
       const value = this.newMsgNum - tips
       this.setNewMsgNum(value)
+      this.setCurrentChattingId(id)
       this.$router.push({ path: `/user/${id}`, query: { userName: userName } })
     }
   }

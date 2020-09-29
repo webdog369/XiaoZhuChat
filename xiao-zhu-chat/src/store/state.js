@@ -9,5 +9,6 @@ export default {
     userState: '在线'
   },
   ChatList: [],
-  newMsgNum: 0
+  newMsgNum: 0,
+  currentChattingId: null
 }

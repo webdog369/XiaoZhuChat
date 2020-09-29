@@ -14,5 +14,8 @@ export default {
   },
   newMsgNum (state) {
     return state.newMsgNum
+  },
+  currentChattingId (state) {
+    return state.currentChattingId
   }
 }

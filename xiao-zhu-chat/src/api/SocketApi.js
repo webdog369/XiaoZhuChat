@@ -24,7 +24,6 @@ export const MsgResult = () => {
   socket.on('sendTo', data => {
     let num = store.getters.newMsgNum
     num++
-    console.log(num)
     store.commit('SET_CHAT_LIST', data)
     store.commit('SET_NEW_MSG_NUM', num)
   })

@@ -70,8 +70,7 @@ export default {
               remakeName: remakeName,
               userAvatar: data.data[0].userAvatar,
               newMsg: lastItem.friendMsg,
-              time: lastItem.time.substr(11, 5),
-              tips: 1
+              time: lastItem.time.substr(11, 5)
             })
           })
         })

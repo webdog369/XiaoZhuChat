@@ -3,7 +3,8 @@ import {
   SET_CURRENT_USER,
   SET_SELECT_TIPS,
   SET_CHAT_LIST,
-  SET_NEW_MSG_NUM
+  SET_NEW_MSG_NUM,
+  SET_CURRENT_CHATTING_ID
 } from './mutations-type'
 import { userSearchOne } from '../api/index'
 export default {
@@ -64,5 +65,8 @@ export default {
   },
   [SET_NEW_MSG_NUM] (state, payload) {
     state.newMsgNum = payload
+  },
+  [SET_CURRENT_CHATTING_ID] (state, payload) {
+    state.currentChattingId = payload
   }
 }
