@@ -40,6 +40,6 @@ export const appendFriend = (id, msg) => {
 // 监听好友请求
 export const friendRequest = () => {
   socket.on('friendRequest', data => {
-    console.log(data)
+    store.commit('SET_NEW_FRIEND_TIPS', true)
   })
 }

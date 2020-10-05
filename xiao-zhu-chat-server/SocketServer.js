@@ -56,7 +56,8 @@ io.on('connection',socket =>{
         const msg = {
             friendId:data.msg.myId,
             friendMsg:data.msg.msg,
-            time:data.msg.time
+            time:data.msg.time,
+            tips:data.msg.tips
         }
         // 私发给指定用户
         socket.to(friendData.userSocketId).emit('sendTo',msg)

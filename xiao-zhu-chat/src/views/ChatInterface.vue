@@ -78,14 +78,23 @@ export default {
     enterMsg (e) {
       // 获取当前时间
       const CurrentTime = formatTime(new Date())
+      let oldTime = null
+      if (this.chatList.length) {
+        oldTime = new Date(this.chatList[this.chatList.length - 1].time).getTime() / 1000
+      }
+      const value = (new Date().getTime() / 1000) - oldTime
       // 定义一个信息体
       const obj = {
         myId: this.currentUser.userXZLCId,
         msg: this.value,
         time: CurrentTime
       }
+      // 当最新信息与当前信息时间差超过三分钟时 给该条信息一个时间提示标签
+      if (value > 180) {
+        obj.tips = CurrentTime
+      }
+      // 获取最新一条消息的时间 若超过三分钟 则显示时间提示
       // 调用chat方法将信息发送给socket服务器
-      console.log('发送数据了,赶紧存')
       chat(this.$route.params.userId, obj)
       // 获取到当前好友的id
       const userId = parseInt(this.$route.params.userId)
@@ -101,36 +110,47 @@ export default {
           }
         })
         if (flag) {
-          // 找到后将当前信息添加到聊天记录列表中
-          this.ChatList[index].chats.push({
+          const msgData = {
             userAvatar: this.currentUser.userAvatar,
             friendMsg: this.value,
             time: CurrentTime,
             tag: 'MY_MSG'
-          })
+          }
+          if (value > 180) {
+            msgData.tips = CurrentTime
+          }
+          // 找到后将当前信息添加到聊天记录列表中
+          this.formatTips(msgData)
+          this.ChatList[index].chats.push(msgData)
         } else {
           // 若没有找到 则创建一个与该好友的聊天记录对象 并将该条信息添加到聊天记录中
-          this.ChatList.push({
+          const msg = {
             friendId: userId,
             chats: [{
               userAvatar: this.currentUser.userAvatar,
               friendMsg: this.value,
               time: CurrentTime,
-              tag: 'MY_MSG'
+              tag: 'MY_MSG',
+              tips: CurrentTime
             }]
-          })
+          }
+          this.formatTips(msg.chats[0])
+          this.ChatList.push(msg)
         }
         // 若该用户没有与如何好友的聊天记录 则在vuex中给当前好友添加一个聊天记录对象
       } else {
-        this.ChatList.push({
+        const msg = {
           friendId: userId,
           chats: [{
             userAvatar: this.currentUser.userAvatar,
             friendMsg: this.value,
             time: CurrentTime,
-            tag: 'MY_MSG'
+            tag: 'MY_MSG',
+            Tips: CurrentTime
           }]
-        })
+        }
+        this.formatTips(msg.chats[0])
+        this.ChatList.push()
       }
       // 输入完信息后清空表单
       this.value = ''
@@ -148,6 +168,7 @@ export default {
       }).then(data => {
         this.friendData = data.data[0]
         this.chatList.map((value, index) => {
+          // 判断是自己的信息还是好友的信息,并打上tag
           if (value.friendId === this.friendData.userXZLCId) {
             value.userAvatar = this.friendData.userAvatar
             value.tag = 'FRIEND_MSG'
@@ -155,8 +176,39 @@ export default {
             value.userAvatar = this.currentUser.userAvatar
             value.tag = 'MY_MSG'
           }
+          this.formatTips(value)
         })
       })
+    },
+    formatTips (value) {
+      if (value.tips === undefined) return
+      // 格式化tips的显示方式
+      const today = formatTime(new Date()).substr(0, 10)
+      const tipsDay = (value.tips + '').substr(0, 10)
+      const oldTip = new Date(value.tips).getTime() / 1000
+      // const yesterday = new Date(value.tips).getTime() / 1000
+      const flag = isNaN(oldTip)
+      const isToday = today === tipsDay
+      const howDay = parseInt(today.substr(9, 2)) - parseInt(tipsDay.substr(9, 2))
+      const howTime = parseInt(value.tips.substr(11, 2))
+      // 如果是今天内的消息 则只显示时间段+小时分钟
+      if (isToday && howTime >= 0 && howTime <= 8) {
+        value.tips = '凌晨' + value.tips.substr(11, 5)
+      } else if (isToday && howTime > 8 && howTime < 13) {
+        value.tips = '上午' + value.tips.substr(11, 5)
+      } else if (isToday && howTime >= 13 && howTime < 20) {
+        value.tips = '下午' + value.tips.substr(11, 5)
+      } else if (isToday && howTime >= 20) {
+        value.tips = '晚上' + value.tips.substr(11, 5)
+      }
+      // 如果是今天以前的消息 则只显示时间段+小时分钟
+      if (!flag && !isToday && howDay === 1) {
+        value.tips = '昨天' + value.tips.substr(11, 5)
+      } else if (!flag && !isToday && howDay === 2) {
+        value.tips = '前天' + value.tips.substr(11, 5)
+      } else if (!flag && !isToday && howDay > 2) {
+        value.tips = value.tips.substr(0, 10)
+      }
     }
   }
 }

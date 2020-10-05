@@ -90,7 +90,8 @@
 import ReturnNavBar from './ReturnNavBar'
 import { userSearchOne, userAddFriend, userFriendList, agreeFriend } from '../api'
 import { mapGetters, mapActions } from 'vuex'
-import { appendFriend } from '../api/SocketApi'
+import { appendFriend, chat } from '../api/SocketApi'
+import { formatTime } from '../tools/tools'
 
 export default {
   name: 'AddFriend',
@@ -106,7 +107,7 @@ export default {
             userSearchOne({ friendId: value.userId }).then(res => {
               res.data[0].status = value.status
               res.data[0].initiative = value.initiative
-              this.searchHistory.push(res.data[0])
+              this.searchHistory.unshift(res.data[0])
             })
           }
         }
@@ -189,7 +190,7 @@ export default {
         console.log(this.searchResult[0])
         this.searchResult[0].status = 0
         this.searchResult[0].initiative = true
-        this.searchHistory.push(this.searchResult[0])
+        this.searchHistory.unshift(this.searchResult[0])
         this.srShow = false
         appendFriend(this.searchResult[0].userXZLCId, `${this.currentUser.userName}请求添加你为好友`)
         userAddFriend(
@@ -221,11 +222,18 @@ export default {
       }
     },
     agree (id, i) {
+      const CurrentTime = formatTime(new Date())
       agreeFriend(this.currentUser.userXZLCId, {
         friendId: id,
         result: true
       }).then(data => {
         this.searchHistory[i].status = 1
+        chat(this.searchHistory[i].userXZLCId, {
+          myId: this.currentUser.userXZLCId,
+          msg: '我通过了你的好友验证,一起来聊天吧~',
+          time: CurrentTime,
+          tips: '已成功添加对方为好友'
+        })
       })
     },
     refuse (id, i) {

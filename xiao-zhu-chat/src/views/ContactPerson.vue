@@ -1,7 +1,7 @@
 <template>
     <div :class="['contact-person',{'no-friend-bg':noFriend}]" ref="contactPerson">
       <div class="new-friend" @click.stop="addFriend">
-        <span></span>
+        <span><i v-show="this.newFriendTips"></i></span>
         <p>新的朋友</p>
       </div>
       <div class="no-friend" v-show="noFriend">
@@ -16,7 +16,7 @@
 <script>
 import InformationBar from '../components/InformationBar'
 import { userFriendList, userSearchOne } from '../api/index'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Vue from 'vue'
 import { IndexBar, IndexAnchor } from 'vant'
 Vue.use(IndexBar)
@@ -56,7 +56,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'currentUser'
+      'currentUser',
+      'newFriendTips'
     ])
   },
   data () {
@@ -68,7 +69,11 @@ export default {
   watch: {
   },
   methods: {
+    ...mapActions([
+      'setNewFriendTips'
+    ]),
     addFriend () {
+      this.setNewFriendTips(false)
       this.$router.push({ path: '/addFriend' })
     }
   }
@@ -137,6 +142,7 @@ export default {
     align-items: center;
     margin-left: 10px;
     span{
+      position: relative;
       display: inline-block;
       width: 80px;
       height: 80px;
@@ -146,6 +152,15 @@ export default {
       background-repeat: no-repeat;
       background-position: center;
       border-radius: 15px;
+      i{
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: red;
+      }
     }
     p{
       flex:1;

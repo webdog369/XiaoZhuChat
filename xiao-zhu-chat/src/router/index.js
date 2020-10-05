@@ -9,13 +9,21 @@ import ChatInterface from '../views/ChatInterface'
 import UserDetail from '../components/Mine/UserDetail'
 import SetUserData from '../components/Mine/SetUserData'
 import AddFriend from '../components/AddFriend'
+import WriteMoment from '../components/Moments/WriteMoment'
 Vue.use(VueRouter)
 const routes = [
   { path: '/', redirect: '/sign' },
   { path: '/Sign', component: Sign },
   { path: '/Chat', component: Chat, name: '消息' },
   { path: '/ContactPerson', component: ContactPerson, name: '联系人' },
-  { path: '/Moments', component: Moments, name: '圈子' },
+  {
+    path: '/Moments',
+    component: Moments,
+    name: '圈子',
+    children: [
+      { path: 'writeMoment', component: WriteMoment }
+    ]
+  },
   {
     path: '/Mine',
     component: Mine,

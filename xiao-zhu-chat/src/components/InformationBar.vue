@@ -65,6 +65,7 @@ export default {
   },
   watch: {
     listData (n) {
+      console.log('来信息了')
       this.$nextTick(() => {
         this.loading = false
       })

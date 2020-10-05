@@ -10,5 +10,6 @@ export default {
   },
   ChatList: [],
   newMsgNum: 0,
+  newFriendTips: false,
   currentChattingId: null
 }

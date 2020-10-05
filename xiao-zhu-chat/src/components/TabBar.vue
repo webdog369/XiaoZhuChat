@@ -6,7 +6,7 @@
     <span>聊天</span>
   </router-link>
   <router-link tag="div" class="item" to="/ContactPerson">
-    <b class="no-text"></b>
+    <b class="no-text" v-show="this.newFriendTips"></b>
     <i></i>
     <span>联系人</span>
   </router-link>
@@ -23,12 +23,35 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import { userFriendList } from '../api'
 export default {
   name: 'TabBar',
   computed: {
     ...mapGetters([
-      'newMsgNum'
+      'newMsgNum',
+      'currentUser',
+      'newFriendTips'
+    ])
+  },
+  created () {
+    userFriendList(this.currentUser.userXZLCId).then(data => {
+      for (const value of data.result) {
+        if (value.status === 0) {
+          console.log('我运行了吗?')
+          this.setNewFriendTips(true)
+        }
+      }
+    })
+  },
+  data () {
+    return {
+      flag: false
+    }
+  },
+  methods: {
+    ...mapActions([
+      'setNewFriendTips'
     ])
   }
 }
@@ -47,7 +70,7 @@ export default {
   background: #eee;
   display: flex;
   justify-content: space-around;
-  z-index: 999;
+  z-index: 1001;
   .item{
     position: relative;
     b{

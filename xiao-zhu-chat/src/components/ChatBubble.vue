@@ -7,6 +7,7 @@
            :key="index"
            ref="item"
       >
+        <p class="tips" v-if="value.tips">{{value.tips}}</p>
         <!--朋友发的信息-->
         <div class="friend-msg"
              v-if="value.tag==='FRIEND_MSG'"
@@ -107,6 +108,14 @@ export default {
       padding-bottom: 20px;
       margin-left: 15px;
       .chat-list{
+        .tips{
+          width: 100%;
+          height: 50px;
+          line-height: 50px;
+          text-align: center;
+          font-size: 26px;
+          color: #999;
+        }
         .friend-msg{
           width: 100%;
           display: flex;
