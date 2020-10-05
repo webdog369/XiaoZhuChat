@@ -52,13 +52,21 @@ export default {
       padding-right: 15px;
       overflow: hidden;
       p{
-        width: 100%;
+        position: absolute;
+        left: 50%;
+        top: 100px;
+        width: 90%;
+        transform: translateX(-50%);
         height: 200px;
-        line-height: 240px;
+        line-height: 50px;
         text-align: center;
-        font-size: 30px;
+        font-size: 26px;
+        color: #333;
       }
       .sure-btn{
+        position: absolute;
+        left: 0;
+        bottom: 0;
         width: 100%;
         height: 80px;
         display: flex;

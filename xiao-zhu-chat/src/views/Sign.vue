@@ -48,7 +48,7 @@
 <script>
 import { signUp, signIn } from '../api/index'
 import { mapActions } from 'vuex'
-import { UserConnection, iKnow, MsgResult } from '../api/SocketApi'
+import { UserConnection, iKnow, MsgResult, friendRequest } from '../api/SocketApi'
 export default {
   name: 'Sign',
   mounted () {
@@ -163,6 +163,8 @@ export default {
             UserConnection(currentUserData)
             iKnow()
             MsgResult()
+            friendRequest()
+            localStorage.setItem('user', `{"userName": "${data.data.user.userName}","userSex": "${data.data.user.userSex}","userAvatar": "${data.data.user.userAvatar}","userXZLCId": ${data.data.user.userXZLCId},"userState": "在线"}`)
             this.$router.push('/Chat')
           }
         })

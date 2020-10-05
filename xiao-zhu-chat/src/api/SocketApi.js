@@ -20,11 +20,26 @@ export const chat = (id, data) => {
   })
 }
 
+// 监听好友发送来的信息
 export const MsgResult = () => {
   socket.on('sendTo', data => {
     let num = store.getters.newMsgNum
-    num++
     store.commit('SET_CHAT_LIST', data)
-    store.commit('SET_NEW_MSG_NUM', num)
+    store.commit('SET_NEW_MSG_NUM', num++)
+  })
+}
+
+// 发射一个好友添加事件
+export const appendFriend = (id, msg) => {
+  socket.emit('appendFriend', {
+    friendId: id,
+    msg: msg
+  })
+}
+
+// 监听好友请求
+export const friendRequest = () => {
+  socket.on('friendRequest', data => {
+    console.log(data)
   })
 }

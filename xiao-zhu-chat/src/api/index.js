@@ -12,5 +12,7 @@ export const userSearchOne = (data) => Network.post('/user/search/one', data)
 export const userAvatarUpData = (data, id) => Network.postFile(`/avatar?id=${id}`, data)
 // 用户添加好友
 export const userAddFriend = (id, data) => Network.patch(`/addFriend/${id}`, data)
-
+// 好友验证
+export const agreeFriend = (id, data) => Network.patch(`/agreeFriend/${id}`, data)
+// 查找用户好友列表
 export const userFriendList = (id) => Network.get(`/user/friend/list/${id}`)

@@ -10,11 +10,20 @@
 
 <script>
 import InformationBar from '../components/InformationBar'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { userFriendList, userSearchOne } from '../api/index'
+import { iKnow, MsgResult, UserConnection } from '../api/SocketApi'
 export default {
   name: 'Chat',
   created () {
+    const user = localStorage.getItem('user')
+    const flag = this.currentUser.userName === '暂无数据'
+    if (user && flag) {
+      this.setCurrentUser(JSON.parse(user))
+      UserConnection(JSON.parse(user))
+      iKnow()
+      MsgResult()
+    }
     this.$nextTick(() => {
       this.formatData()
     })
@@ -42,6 +51,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'setCurrentUser'
+    ]),
     changeTips (i) {
       this.ChatLists[i].tips = 0
     },
@@ -63,6 +75,7 @@ export default {
           userSearchOne({
             friendId: key.friendId
           }).then(data => {
+            // console.log(data)
             // 将用户每个好友的最新一条聊天数据提取出来 包装后push到数组中
             this.ChatLists.push({
               userXZLCId: data.data[0].userXZLCId,

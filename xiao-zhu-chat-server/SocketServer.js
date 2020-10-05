@@ -18,6 +18,7 @@ server.listen(3001,()=>{
 
 io.on('connection',socket =>{
     let userId = null
+    console.log('有用户登录了')
     socket.on('UserConnection',async msg => {
         // 全局保存一下当前用户的id
         userId = msg.userXZLCId
@@ -65,6 +66,18 @@ io.on('connection',socket =>{
         await SaveChatList(data.userId,data.msg.myId,msg)
     })
 
+    // 监听一个好友添加事件
+    socket.on('appendFriend', async data => {
+        console.log(data);
+        // 根据朋友的id 找到朋友的最新数据 取出其在线时候的socketId
+        const friendData = await XZLC_User_Data.findOne({
+            userXZLCId: data.friendId,
+        })
+        socket.to(friendData.userSocketId).emit('friendRequest', {
+            friendId:userId,
+            msg:data.msg
+        })
+    })
 
 
     // 用户断开连接

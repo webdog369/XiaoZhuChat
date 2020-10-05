@@ -9,7 +9,11 @@ const Schema = new mongoose.Schema({
     userXZLCId:{ type: Number },
     userFriend:[{
         userId:{type:Number},
-        remakeName:{type:String}
+        remakeName:{type:String},
+        // 0表示等待验证 1表示同意 2表示拒绝
+        status:{type:Number},
+        // 是否是自己主动添加的
+        initiative:{type:Boolean}
     }]
 });
 

@@ -71,7 +71,8 @@ export default {
     }
   },
   watch: {
-    chatList (n) {
+    chatList (n, o) {
+      console.log(n, o)
       this.$nextTick(() => {
         this.flag = true
         this.chatList = n
@@ -83,7 +84,7 @@ export default {
         if (elOffsetTop > boxHeight) {
           this.$refs.scrollView.scrollTo(0, -y, 50)
         }
-        this.$refs.scrollView.refresh()
+        // this.$refs.scrollView.refresh()
         // 废弃方法:原因--如果使用scrollIntoView需要overflow:auto 会造成页面偏移
         // this.$refs.scrollView.refresh()
         // this.$refs.item[i].scrollIntoView(false)

@@ -12,7 +12,7 @@ const {
     cb
 } = require('./api/userDataApi')
 
-const {addFriend,searchFriendList} = require('./api/userFriendDataApi')
+const {addFriend,searchFriendList, agreeFriend} = require('./api/userFriendDataApi')
 
 // 创建express实例
 const app = express()
@@ -25,7 +25,6 @@ app.use('/',express.static("public"))
 
 // 使用body-Parser中间件 允许处理json数据
 app.use(bodyParser.json());
-
 
 /*
     ------------------------------------------------------------------------------------------
@@ -54,6 +53,9 @@ app.patch('/avatar',multers,cb );
 
 // 用户添加好友
 app.patch('/addFriend/:id',addFriend)
+
+// 好友验证
+app.patch('/agreeFriend/:id',agreeFriend)
 
 // 查找好友列表
 app.get('/user/friend/list/:id',searchFriendList)

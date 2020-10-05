@@ -1,6 +1,7 @@
 <template>
     <div class="add-friend">
       <ReturnNavBar :title="'添加好友'"></ReturnNavBar>
+     <!--搜索栏-->
       <div class="search">
         <span></span>
         <input
@@ -10,10 +11,12 @@
           :placeholder="placeholder"
         >
       </div>
+      <!--搜索提示-->
       <div class="searchBtn" v-show="value" @click.stop="search">
         <i></i>
         <p>搜索: <span>{{value}}</span></p>
       </div>
+      <!--搜索结果-->
       <div
         class="searchResult"
         v-for="value in searchResult"
@@ -25,7 +28,10 @@
           <div class="userData">
             <div class="userName">{{value.userName}}</div>
             <div class="other">
-              <span><i></i>{{value.userSex}}</span>
+              <span>
+                <i
+                  :class="[value.userSex === '男'?'boy':'girl']"
+              ></i>{{value.userSex}}</span>
               <span>轻聊号:{{value.userXZLCId}}</span>
             </div>
           </div>
@@ -33,6 +39,43 @@
         <span class="add" @click.stop="goAdd">添加</span>
       </div>
       <div class="errmsg" v-show="noUser">用户不存在</div>
+
+      <!--添加历史-->
+      <hr>
+      <p style="color:#666;font-size: 28px;">{{this.searchHistory.length?'添加历史':'暂无添加记录'}}</p>
+      <div
+        class="searchHistory"
+        v-for="(value, index) in searchHistory"
+        :key="value.userName"
+      >
+        <div class="friend">
+          <img class="avatar" :src="value.userAvatar">
+          <div class="userData">
+            <div class="userName">{{value.userName}}</div>
+            <div class="other">
+              <span>
+                <i
+                  :class="[value.userSex === '男'?'boy':'girl']"
+                ></i>{{value.userSex}}</span>
+              <span>轻聊号:{{value.userXZLCId}}</span>
+            </div>
+          </div>
+        </div>
+         <!--若是主动添加显示等待验证-->
+          <span
+            :class="['add',{'wait':value.status === 0},{'add-ok':value.status === 1},{'add-fail':value.status === 2}]"
+            v-if="value.initiative"
+          >{{statusText[value.status]}}</span>
+          <div class="change" v-else-if="value.status === 0">
+            <span @click.stop="agree(value.userXZLCId,index)">同意</span>
+            <span @click.stop="refuse(value.userXZLCId,index)">拒绝</span>
+          </div>
+        <span
+          :class="['add',{'add-ok':value.status === 1},{'add-fail':value.status === 2}]"
+          v-else
+        >{{statusText2[value.status]}}</span>
+      </div>
+
       <div class="remakeName" v-show="remakeName">
         <input type="text" placeholder="给好友添加个好记的名字吧~" v-model="rnValue">
         <button
@@ -45,11 +88,31 @@
 
 <script>
 import ReturnNavBar from './ReturnNavBar'
-import { userSearchOne, userAddFriend } from '../api'
+import { userSearchOne, userAddFriend, userFriendList, agreeFriend } from '../api'
 import { mapGetters, mapActions } from 'vuex'
+import { appendFriend } from '../api/SocketApi'
 
 export default {
   name: 'AddFriend',
+  created () {
+    this.$nextTick(() => {
+      // 将用户好友列表导入
+      userFriendList(this.currentUser.userXZLCId).then(data => {
+        const type = typeof data.result
+        if (type === 'object') {
+          for (const value of data.result) {
+            // console.log(value.userId)
+            console.log(value)
+            userSearchOne({ friendId: value.userId }).then(res => {
+              res.data[0].status = value.status
+              res.data[0].initiative = value.initiative
+              this.searchHistory.push(res.data[0])
+            })
+          }
+        }
+      })
+    })
+  },
   components: {
     ReturnNavBar
   },
@@ -63,10 +126,13 @@ export default {
       value: '',
       placeholder: '输入好友用户名或轻聊号添加...',
       searchResult: [],
+      searchHistory: [],
       srShow: false,
       noUser: false,
       remakeName: false,
-      rnValue: ''
+      rnValue: '',
+      statusText: ['等待验证', '对方已同意', '对方已拒绝'],
+      statusText2: ['等待验证', '已同意', '已拒绝']
     }
   },
   methods: {
@@ -83,6 +149,11 @@ export default {
     },
     search () {
       const result = parseInt(this.value)
+      // 若用户查找的是自己 就跳转到个人界面
+      if (result === this.currentUser.userXZLCId || this.value === this.currentUser.userName) {
+        this.$router.push({ path: '/Mine' })
+        return
+      }
       const data = {
         friendName: this.value,
         friendId: result
@@ -90,7 +161,6 @@ export default {
       userSearchOne(data).then(data => {
         if (data.data[0].userName !== undefined) {
           this.searchResult = data.data
-          console.log(data)
         } else {
           this.noUser = true
         }
@@ -99,21 +169,73 @@ export default {
       this.srShow = true
     },
     goAdd () {
-      this.remakeName = true
-      this.srShow = false
-    },
-    add () {
-      userAddFriend(
-        this.currentUser.userXZLCId,
-        {
-          friendId: this.searchResult[0].userXZLCId,
-          remakeName: this.rnValue
+      // this.remakeName = true
+      // 定义一个flag
+      let flag = false
+      let currentIndex = null
+      let status = null
+      // 查找用户添加记录中是否存在该用户
+      this.searchHistory.map((value, index) => {
+        if (value.userXZLCId === this.searchResult[0].userXZLCId) {
+          flag = true
+          currentIndex = index
+          status = value.status
+          console.log('你添加过当前用户了')
         }
-      ).then(data => {
-        console.log(data)
-        this.setSelectTips([data.data.msg, true])
-        this.$router.go(-1)
       })
+      // 若不存在 则添加一条添加记录
+      if (!flag) {
+        console.log('你没添加过当前用户,现在添加')
+        console.log(this.searchResult[0])
+        this.searchResult[0].status = 0
+        this.searchResult[0].initiative = true
+        this.searchHistory.push(this.searchResult[0])
+        this.srShow = false
+        appendFriend(this.searchResult[0].userXZLCId, `${this.currentUser.userName}请求添加你为好友`)
+        userAddFriend(
+          this.currentUser.userXZLCId,
+          {
+            friendId: this.searchResult[0].userXZLCId
+          }
+        ).then(data => {
+          this.setSelectTips([data.data.msg, true])
+          // this.$router.go(-1)
+        })
+        // 若存在 则分情况提示用户
+      } else {
+        console.log('监测到你添加过了,现在开始重新请求')
+        this.srShow = false
+        userAddFriend(
+          this.currentUser.userXZLCId,
+          {
+            friendId: this.searchResult[0].userXZLCId
+          }
+        ).then(data => {
+          console.log(this.searchHistory[currentIndex])
+          if (status === 2) {
+            this.searchHistory[currentIndex].status = 0
+          }
+          this.setSelectTips([data.data.msg, true])
+          // this.$router.go(-1)
+        })
+      }
+    },
+    agree (id, i) {
+      agreeFriend(this.currentUser.userXZLCId, {
+        friendId: id,
+        result: true
+      }).then(data => {
+        this.searchHistory[i].status = 1
+      })
+    },
+    refuse (id, i) {
+      agreeFriend(this.currentUser.userXZLCId, {
+        friendId: id,
+        result: false
+      }).then(data => {
+        this.searchHistory[i].status = 2
+      })
+      // agreeFriend()
     }
   }
 }
@@ -200,7 +322,7 @@ export default {
       }
     }
   }
-  .searchResult{
+  .searchResult,.searchHistory{
     width: 100%;
     min-height: 100px;
     background: #fff;
@@ -243,11 +365,16 @@ export default {
             display: inline-block;
             width: 30px;
             height: 30px;
-            background-image: url('../assets/images/boy_icon.png');
             background-size: cover;
             margin-left: 5px;
             margin-right: 5px;
             vertical-align: middle;
+            &.boy{
+              background-image: url('../assets/images/boy_icon.png');
+            }
+            &.girl{
+              background-image: url('../assets/images/girl_icon.png');
+            }
           }
           span{
             line-height: 60px;
@@ -261,7 +388,7 @@ export default {
       }
     }
     .add{
-      width: 120px;
+      width: auto;
       height: 50px;
       line-height: 50px;
       background: #1082FF;
@@ -269,6 +396,38 @@ export default {
       text-align: center;
       margin-right: 25px;
       font-size: 25px;
+      padding-left: 10px;
+      padding-right: 10px;
+      &.wait{
+        background: orange;
+      }
+      &.add-ok{
+        background: #ccc;
+      }
+      &.add-fail{
+        background: indianred;
+      }
+    }
+    .change{
+      width: 200px;
+      height: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      span{
+        width: 80px;
+        height: 60px;
+        background: forestgreen;
+        color: #fff;
+        line-height: 60px;
+        font-size: 25px;
+        text-align: center;
+        border-radius: 5px;
+        &:nth-child(2){
+          background: indianred;
+        }
+      }
     }
   }
   .errmsg{

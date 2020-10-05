@@ -1,5 +1,9 @@
 <template>
-    <div class="contact-person" ref="contactPerson">
+    <div :class="['contact-person',{'no-friend-bg':noFriend}]" ref="contactPerson">
+      <div class="new-friend" @click.stop="addFriend">
+        <span></span>
+        <p>新的朋友</p>
+      </div>
       <div class="no-friend" v-show="noFriend">
         <i></i>
         <span>点击加号添加好友</span>
@@ -20,25 +24,27 @@ Vue.use(IndexAnchor)
 export default {
   name: 'ContactPerson',
   beforeMount () {
+    let flag = false
     // 根据当前用户id查找用户的好友列表
     userFriendList(this.currentUser.userXZLCId).then(data => {
-      // 若当前用户没有好友则返回的是一个字符串 若有好友 返回的是数组
-      if (typeof data.result !== 'string') {
-        // 若获取到还有列表 则将列表中的好友id提取出来
-        for (const key of data.result) {
+      // 若获取到还有列表 则将列表中的好友id提取出来
+      for (const key of data.result) {
+        if (key.status === 1) {
           // 根据提取出来的好友id 查询到好友最新的详细个人信息
           userSearchOne({
             friendId: key.userId
           }).then(data => {
-            // 将查询到的信息push到ContactPersonData中
+            // 将查询到的信息进行判断,状态为已添加(0)的好友push到ContactPersonData中
             const items = data.data[0]
             items.remakeName = key.userRemakeName
             this.ContactPersonData.push(items)
           })
+          this.noFriend = false
+          flag = true
         }
-      } else {
-        // 若返回的是字符串 则说明该用户没有好友 则显示没有好友的样式
-        this.$refs.contactPerson.classList.add('no-friend-bg')
+      }
+      // 若当前用户没有好友则返回的是一个字符串  或者 找不到好友状态为已添加的好友 则显示无联系人
+      if (typeof data.result === 'string' || !flag) {
         this.noFriend = true
       }
     })
@@ -60,6 +66,11 @@ export default {
     }
   },
   watch: {
+  },
+  methods: {
+    addFriend () {
+      this.$router.push({ path: '/addFriend' })
+    }
   }
 }
 </script>
@@ -115,6 +126,34 @@ export default {
       line-height: 100px;
       font-size: 35px;
       color: #999;
+    }
+  }
+  .new-friend{
+    width: 100%;
+    height: 100px;
+    background: #fff;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-left: 10px;
+    span{
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      background-color: orange;
+      background-image: url("../assets/images/add_friend.png");
+      background-size: 60%;
+      background-repeat: no-repeat;
+      background-position: center;
+      border-radius: 15px;
+    }
+    p{
+      flex:1;
+      text-align: left;
+      margin-left: 20px;
+      font-size: 28px;
+      line-height: 100px;
+      border-bottom: 1px solid #ccc;
     }
   }
 }
