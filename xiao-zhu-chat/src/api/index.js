@@ -16,3 +16,11 @@ export const userAddFriend = (id, data) => Network.patch(`/addFriend/${id}`, dat
 export const agreeFriend = (id, data) => Network.patch(`/agreeFriend/${id}`, data)
 // 查找用户好友列表
 export const userFriendList = (id) => Network.get(`/user/friend/list/${id}`)
+// 发布朋友圈
+export const userWriteMoment = (data) => Network.post('/writeMoment', data)
+// 查询某人朋友圈
+export const userSearchMoment = (id) => Network.get(`/searchMoment/${id}`)
+// 查询所有好友朋友圈
+export const searchFriendMoment = (data) => Network.post('/searchFriendMoment', data)
+// 点赞朋友圈
+export const userLike = (id, data) => Network.patch(`/like/${id}`, data)

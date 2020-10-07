@@ -5,7 +5,8 @@ import {
   SET_CHAT_LIST,
   SET_NEW_MSG_NUM,
   SET_NEW_FRIEND_TIPS,
-  SET_CURRENT_CHATTING_ID
+  SET_CURRENT_CHATTING_ID,
+  SET_MOMENT_SCROLL_Y
 } from './mutations-type'
 import { userSearchOne } from '../api/index'
 export default {
@@ -72,5 +73,8 @@ export default {
   },
   [SET_CURRENT_CHATTING_ID] (state, payload) {
     state.currentChattingId = payload
+  },
+  [SET_MOMENT_SCROLL_Y] (state, payload) {
+    state.momentScrollY = payload
   }
 }

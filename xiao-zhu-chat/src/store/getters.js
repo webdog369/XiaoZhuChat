@@ -20,5 +20,8 @@ export default {
   },
   currentChattingId (state) {
     return state.currentChattingId
+  },
+  momentScrollY (state) {
+    return state.momentScrollY
   }
 }

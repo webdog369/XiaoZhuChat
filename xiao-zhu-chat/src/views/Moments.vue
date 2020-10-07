@@ -1,5 +1,5 @@
 <template>
-      <div class="moments" ref="moments">
+      <div class="moments" ref="moments" id="moments">
         <router-link tag="i" class="camera" to="/Moments/writeMoment">
           <img src="../assets/images/camera.svg" alt="">
         </router-link>
@@ -9,7 +9,7 @@
                       <!--需要外界传递图片地址(path)-->
 <!--                      <img src="../assets/images/MomentBg.jpg" alt="" ref="top">-->
                   </div>
-                  <MomentPage :userMoments="userMoments"></MomentPage>
+                  <MomentPage></MomentPage>
               </div>
           </ScrollView>
           <router-view></router-view>
@@ -19,16 +19,19 @@
 <script>
 import ScrollView from '../components/ScrollView'
 import MomentPage from '../components/Moments/MomentPage'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Moments',
   components: {
     MomentPage,
     ScrollView
   },
+  created () {
+  },
   // 已经将编译好的模板挂载到页面的指定容器中, mounted ()此时已经可以拿到组件中的元素
   mounted () {
     // console.log(defaultHeight) // 829
-    this.$refs.scrollview.scrolling((offsetY) => {
+    this.$refs.scrollview.scrolling(offsetY => {
       if (offsetY > 0) {
         // console.log('向下滚动')  图片会越来越大
         const scale = 100 + offsetY * 0.1
@@ -39,77 +42,29 @@ export default {
       } else {
         this.$refs.moments.style.zIndex = 1000
       }
+      this.pageScrollY = offsetY
     })
+  },
+  computed: {
+    ...mapGetters([
+      'currentUser',
+      'momentScrollY'
+    ])
   },
   data () {
     return {
-      userMoments: [
-        {
-          userName: '小朱',
-          userAvatar: 'http://localhost:3000/userAvatar/avatar_1000.jpeg',
-          content: '姜子牙,你可知罪!',
-          pics: [],
-          likeNum: 0,
-          time: '2020年10月6日 01:06'
-        },
-        {
-          userName: '小朱',
-          userAvatar: 'http://localhost:3000/userAvatar/avatar_1000.jpeg',
-          content: '姜子牙,你可知罪!',
-          pics: [
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130584&di=ec14ebed57ffe19260d491d4bcbbbce7&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fb9bf4f33ly1ghsujm7vytj20u016ktia.jpg'
-          ],
-          likeNum: 0,
-          time: '2020年10月6日 01:06'
-        },
-        {
-          userName: '小朱',
-          userAvatar: 'http://localhost:3000/userAvatar/avatar_1000.jpeg',
-          content: '姜子牙,你可知罪!',
-          pics: [
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130584&di=ec14ebed57ffe19260d491d4bcbbbce7&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fb9bf4f33ly1ghsujm7vytj20u016ktia.jpg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130584&di=ec14ebed57ffe19260d491d4bcbbbce7&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fb9bf4f33ly1ghsujm7vytj20u016ktia.jpg'
-          ],
-          likeNum: 0,
-          time: '2020年10月6日 01:06'
-        },
-        {
-          userName: '小朱',
-          userAvatar: 'http://localhost:3000/userAvatar/avatar_1000.jpeg',
-          content: '姜子牙,你可知罪!',
-          pics: [
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130584&di=ec14ebed57ffe19260d491d4bcbbbce7&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fb9bf4f33ly1ghsujm7vytj20u016ktia.jpg'
-          ],
-          likeNum: 0,
-          time: '2020年10月6日 01:06'
-        },
-        {
-          userName: '小朱',
-          userAvatar: 'http://localhost:3000/userAvatar/avatar_1000.jpeg',
-          content: '姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!姜子牙,你可知罪!',
-          pics: [
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130585&di=176a0f0ab02b9c29f5f3cab3bcd38d54&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fohglpohpov.jpeg',
-            'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1601928130584&di=ec14ebed57ffe19260d491d4bcbbbce7&imgtype=0&src=http%3A%2F%2Femoji.cdn.bcebos.com%2Fyunque%2Fb9bf4f33ly1ghsujm7vytj20u016ktia.jpg'
-          ],
-          likeNum: 0,
-          time: '2020年10月6日 01:06'
-        }
-
-      ]
+      friendIdList: [],
+      pageScrollY: 0
     }
+  },
+  methods: {
+    ...mapActions([
+      'setMomentScrollY'
+    ])
+  },
+  beforeRouteLeave (to, from, next) {
+    this.setMomentScrollY(this.pageScrollY)
+    next()
   }
 }
 </script>
@@ -140,9 +95,10 @@ export default {
   }
     .img-container{
         width: 100%;
-        height: 500px;
+        /*此高度为计算后的黄金分割比*/
+        height: 388px;
         overflow: hidden;
-        position: relative;
+        margin-top: 80px;
         img{
             width: 100%;
             height: 500px;

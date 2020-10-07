@@ -5,7 +5,8 @@ import {
   SET_CHAT_LIST,
   SET_NEW_MSG_NUM,
   SET_CURRENT_CHATTING_ID,
-  SET_NEW_FRIEND_TIPS
+  SET_NEW_FRIEND_TIPS,
+  SET_MOMENT_SCROLL_Y
 } from './mutations-type'
 export default {
   setTips ({ commit }, payload) {
@@ -28,5 +29,8 @@ export default {
   },
   setNewFriendTips ({ commit }, payload) {
     commit(SET_NEW_FRIEND_TIPS, payload)
+  },
+  setMomentScrollY ({ commit }, payload) {
+    commit(SET_MOMENT_SCROLL_Y, payload)
   }
 }

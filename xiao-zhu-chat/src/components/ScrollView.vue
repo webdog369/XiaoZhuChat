@@ -59,6 +59,9 @@ export default {
     },
     scrollTo (x, y, time) {
       this.iscroll.scrollTo(x, y, time)
+    },
+    scrollEnd (fn) {
+      this.iscroll.on('scrollEnd', fn)
     }
   }
 }

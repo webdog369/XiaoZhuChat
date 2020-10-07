@@ -4,8 +4,8 @@
         <img class="avatar" :src="this.currentUser.userAvatar" alt="">
         <div class="list">
             <div class="personal"
-            v-for="value in userMoments"
-            :key="value.userName"
+            v-for="(value, index) in userMoments"
+            :key="value._id"
             >
                 <div class="left">
                     <img class="photo" :src="value.userAvatar"/>
@@ -25,14 +25,24 @@
                     </div>
                     <div class="personal-bottom">
                         <p class="time">{{value.time}}</p>
-                        <p class="control">
-                            <img src="../../assets/images/like.svg" alt="">
+                        <p class="control" @click.stop="likeIt(value._id,index)">
+                          <span></span>
                             <i>赞</i>
                         </p>
                     </div>
+                  <div class="like-list"
+                       v-show="value.likeList.length"
+                  >
+                    <span
+                      v-for="v in value.likeList"
+                      :key="v.userXZLCId"
+                      @click.stop="goDetail(v.userXZLCId)"
+                    >{{v.userName}}{{value.likeList.length>1?'，':''}}</span>
+                     {{value.likeList.length>1?'等人觉得很赞':'觉得很赞'}}
+                  </div>
                 </div>
             </div>
-             <p class="no-more"><i></i><span>暂时没有更多动态了</span><i></i></p>
+             <p :class="['no-more',{'no-one':!userMoments.length}]"><i></i><span>暂时没有更多动态了</span><i></i></p>
         </div>
     </div>
 </template>
@@ -40,21 +50,59 @@
 <script>
 // import ScrollView from '../ScrollView'
 import { mapGetters } from 'vuex'
+import { searchFriendMoment, userFriendList, userSearchOne } from '../../api'
 export default {
   name: 'MomentPage',
-  components: {
-    // ScrollView
+  created () {
+    const friendIdList = [this.currentUser.userXZLCId]
+    // 查找用户好友列表
+    userFriendList(this.currentUser.userXZLCId).then(data => {
+      // 遍历好友列表 取出好友id
+      for (const value of data.result) {
+        friendIdList.push(value.userId)
+      }
+      // 利用好友id查到所有好友的朋友圈
+      searchFriendMoment({
+        friendIdList: friendIdList
+      }).then(data => {
+        data.data.result.map((v, i) => {
+          userSearchOne({
+            friendId: v.userId
+          }).then(data => {
+            const obj = v
+            obj.userAvatar = data.data[0].userAvatar
+            obj.userName = data.data[0].userName
+            obj.likeList = []
+            for (const key of v.likeUser) {
+              userSearchOne({
+                friendId: key
+              }).then(res => {
+                obj.likeList.push(res.data[0])
+              })
+            }
+            this.userMoments.unshift(obj)
+          })
+        })
+      })
+    })
   },
   computed: {
     ...mapGetters([
       'currentUser'
     ])
   },
-  props: {
-    userMoments: {
-      type: Array,
-      default: () => [],
-      require: true
+  data () {
+    return {
+      userMoments: []
+    }
+  },
+  methods: {
+    likeIt (id, index) {
+      console.log(id)
+      this.userMoments[index].likeList.unshift(this.currentUser)
+    },
+    goDetail (id) {
+      this.$router.push({ path: `/friendDetail/${id}` })
     }
   }
 }
@@ -118,7 +166,7 @@ export default {
                         box-sizing: border-box;
                         font-size: 32px;
                         font-weight: bold;
-                        color: #575757;
+                        color: rgb(64,97,128);
                     }
                 }
                 .review{
@@ -165,16 +213,35 @@ export default {
                         margin-right: 20px;
                         font-size: 28px;
                         color: #b9b9b9;
-                        img{
-                            width: 35px;
-                            height:35px;
-                            margin-bottom: 10px;
+                        span{
+                            display: inline-block;
+                            width: 40px;
+                            height:40px;
+                            /*margin-bottom: 10px;*/
+                            background-image: url('../../assets/images/like_icon_active.png');
+                            background-size:90%;
+                            background-position: center;
+                            background-repeat: no-repeat;
+                            vertical-align: middle;
                         }
                         i{
                             font-style:normal;
                             margin-left: 15px;
+                            font-size: 28px;
                         }
                     }
+                }
+                .like-list{
+                  width: 95%;
+                  height: 50px;
+                  background: #eee;
+                  font-size: 26px;
+                  padding-left: 10px;
+                  span{
+                    color: rgb(64,97,128);
+                    line-height: 50px;
+                    font-weight: bold;
+                  }
                 }
             }
         }
@@ -197,6 +264,10 @@ export default {
         flex: 1;
         height: 1px;
         background: #ddd;
+      }
+      &.no-one{
+        width: 100%;
+        height: 300px;
       }
     }
 }

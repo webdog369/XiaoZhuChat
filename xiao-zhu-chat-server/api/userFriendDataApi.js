@@ -22,7 +22,6 @@ const agreeFriend = async (req, res) => {
     }catch (e) {}
 
 }
-
 const searchFriendList = async (req,res) =>{
     const List = await XZLC_User_Friend_Data.findOne({
         userXZLCId:req.params.id

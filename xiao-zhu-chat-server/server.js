@@ -12,7 +12,8 @@ const {
     cb
 } = require('./api/userDataApi')
 
-const {addFriend,searchFriendList, agreeFriend} = require('./api/userFriendDataApi')
+const {addFriend, searchFriendList, agreeFriend} = require('./api/userFriendDataApi')
+const {writeMoment, searchMoment,searchFriendMoment, like} = require('./api/userMomentApi')
 
 // 创建express实例
 const app = express()
@@ -60,30 +61,17 @@ app.patch('/agreeFriend/:id',agreeFriend)
 // 查找好友列表
 app.get('/user/friend/list/:id',searchFriendList)
 
+// 发布朋友圈
+app.post('/writeMoment',writeMoment)
 
-// 废弃代码
-/*let upload = multer({ dest: './public/images/' });
+// 查找单个用户朋友圈
+app.get('/searchMoment/:id',searchMoment)
 
-单图上传
-app.post('/upload', upload.single('value'), function(req, res, next){
-    res.send({
-        msg:req.file.path
-    });
-});
-app.post('/imageLoad', async (req,res)=>{
-    const rs = fs.createReadStream(req.body.newAvatar)
-    const ws = fs.createWriteStream('./public/images/')
-    rs.on('data',data=>{
-        console.log('读取到的数据是:', data)
-    });
-    rs.on('end',data=>{
-        console.log('读取流结束,关闭了写入流');
-        ws.end()
-    })
-    res.send({
-        msg:'ok'
-    })
-})*/
+// 查找所有好友朋友圈
+app.post('/searchFriendMoment',searchFriendMoment)
+
+// 朋友圈点赞和取消点赞的方法
+app.patch('/like/:id',like)
 
 /*
     ====================================项目API接口=============================================

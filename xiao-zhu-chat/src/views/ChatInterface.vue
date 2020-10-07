@@ -180,6 +180,7 @@ export default {
         })
       })
     },
+    // 格式化提示信息
     formatTips (value) {
       if (value.tips === undefined) return
       // 格式化tips的显示方式
