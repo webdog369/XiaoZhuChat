@@ -5,7 +5,10 @@
           class="items" v-for="(value, index) in listData"
           :key="value.userName"
         >
-          <i :style="{backgroundImage:`url(${value.userAvatar})`}"></i>
+          <i
+            :style="{backgroundImage:`url(${value.userAvatar})`}"
+            @click.stop="goDetail(value.userXZLCId)"
+          ></i>
           <div class="data" @click.stop="goChat(value.userXZLCId,value.remakeName?value.remakeName:value.userName,value.tips,index)">
             <div class="info">
               <h2
@@ -76,6 +79,9 @@ export default {
       'setNewMsgNum',
       'setCurrentChattingId'
     ]),
+    goDetail (id) {
+      this.$router.push({ path: `/friendDetail/${id}` })
+    },
     goChat (id, userName, tips, index) {
       this.$emit('changeTips', index)
       // 获取到总的未读消息数 利用总的未读消息数减去当前点击用户的未读消息数
@@ -141,8 +147,8 @@ export default {
         align-items: center;
         margin-right: 15px;
         .time{
-          width: 80px;
-          margin-right: 5px;
+          width: 180px;
+          margin-right: 15px;
           font-size: 24px;
           color: #666;
           text-align: center;

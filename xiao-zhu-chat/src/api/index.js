@@ -14,6 +14,8 @@ export const userAvatarUpData = (data, id) => Network.postFile(`/avatar?id=${id}
 export const userAddFriend = (id, data) => Network.patch(`/addFriend/${id}`, data)
 // 好友验证
 export const agreeFriend = (id, data) => Network.patch(`/agreeFriend/${id}`, data)
+
+export const setRemakeName = (id, data) => Network.post(`/setRemakeName/${id}`, data)
 // 查找用户好友列表
 export const userFriendList = (id) => Network.get(`/user/friend/list/${id}`)
 // 发布朋友圈

@@ -75,14 +75,6 @@
           v-else
         >{{statusText2[value.status]}}</span>
       </div>
-
-      <div class="remakeName" v-show="remakeName">
-        <input type="text" placeholder="给好友添加个好记的名字吧~" v-model="rnValue">
-        <button
-          :class="{'active':rnValue.length}"
-          @click.stop="add"
-        >{{rnValue.length?'完成':'暂不添加'}}</button>
-      </div>
     </div>
 </template>
 
@@ -130,8 +122,6 @@ export default {
       searchHistory: [],
       srShow: false,
       noUser: false,
-      remakeName: false,
-      rnValue: '',
       statusText: ['等待验证', '对方已同意', '对方已拒绝'],
       statusText2: ['等待验证', '已同意', '已拒绝']
     }
@@ -447,43 +437,6 @@ export default {
     text-align: center;
     color: #333;
     background: #fff;
-  }
-  .remakeName{
-    position: absolute;
-    left: 0;
-    top: 50px;
-    width: 100%;
-    height: 200px;
-    background: #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 15px;
-    input{
-      height: 80px;
-      flex: 1;
-      border:none;
-      background: #eee;
-      font-size: 30px;
-      outline: none;
-      border-bottom: 1px solid #ccc;
-      padding-left: 15px;
-      padding-right: 15px;
-      margin-right: 5px;
-    }
-    button{
-      height: 80px;
-      width: 150px;
-      color: #fff;
-      font-size: 28px;
-      border:none;
-      margin-right: 20px;
-      border-radius: 10px;
-      background: #4886c7;
-      &.active{
-        background: #1082FF;
-      }
-    }
   }
 }
 </style>

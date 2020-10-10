@@ -10,7 +10,9 @@ const Schema = new mongoose.Schema({
         content:{type:String},
         pics:{type:Array},
         time:{type:String},
-        likeUser:{type:Array}
+        likeUser:{type:Array},
+        // 朋友圈权限 0 所有人 1 好友 2 仅自己
+        competence:{type:Number}
 });
 
 const XZLC_User_Moment_Data = mongoose.model("UserMoment",Schema);

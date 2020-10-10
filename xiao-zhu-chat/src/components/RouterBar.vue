@@ -37,7 +37,7 @@ export default {
   font-size: 28px;
   margin-top: 5px;
   margin-bottom: 5px;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid #eee;
   .title{
     flex: 1;
   }

@@ -190,17 +190,17 @@ export default {
       // const yesterday = new Date(value.tips).getTime() / 1000
       const flag = isNaN(oldTip)
       const isToday = today === tipsDay
-      const howDay = parseInt(today.substr(9, 2)) - parseInt(tipsDay.substr(9, 2))
+      const howDay = parseInt(today.substr(8, 2)) - parseInt(tipsDay.substr(8, 2))
       const howTime = parseInt(value.tips.substr(11, 2))
       // 如果是今天内的消息 则只显示时间段+小时分钟
       if (isToday && howTime >= 0 && howTime <= 8) {
-        value.tips = '凌晨' + value.tips.substr(11, 5)
+        value.tips = '凌晨 ' + value.tips.substr(11, 5)
       } else if (isToday && howTime > 8 && howTime < 13) {
-        value.tips = '上午' + value.tips.substr(11, 5)
+        value.tips = '上午 ' + value.tips.substr(11, 5)
       } else if (isToday && howTime >= 13 && howTime < 20) {
-        value.tips = '下午' + value.tips.substr(11, 5)
+        value.tips = '下午 ' + value.tips.substr(11, 5)
       } else if (isToday && howTime >= 20) {
-        value.tips = '晚上' + value.tips.substr(11, 5)
+        value.tips = '晚上 ' + value.tips.substr(11, 5)
       }
       // 如果是今天以前的消息 则只显示时间段+小时分钟
       if (!flag && !isToday && howDay === 1) {

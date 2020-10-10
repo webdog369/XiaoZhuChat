@@ -1,6 +1,10 @@
 <template>
       <div class="moments" ref="moments" id="moments">
-        <router-link tag="i" class="camera" to="/Moments/writeMoment">
+        <div class="return" @click.stop="goBack">
+          <span></span>
+          <b>返回</b>
+        </div>
+        <router-link tag="i" class="camera" to="/writeMoment">
           <img src="../assets/images/camera.svg" alt="">
         </router-link>
           <ScrollView ref="scrollview">
@@ -9,10 +13,9 @@
                       <!--需要外界传递图片地址(path)-->
 <!--                      <img src="../assets/images/MomentBg.jpg" alt="" ref="top">-->
                   </div>
-                  <MomentPage></MomentPage>
+                  <MomentPage :personMoment="personMoment"></MomentPage>
               </div>
           </ScrollView>
-          <router-view></router-view>
       </div>
 </template>
 
@@ -27,6 +30,8 @@ export default {
     ScrollView
   },
   created () {
+    this.personMoment = this.$route.query
+    // this.pageScrollY = this.momentScrollY
   },
   // 已经将编译好的模板挂载到页面的指定容器中, mounted ()此时已经可以拿到组件中的元素
   mounted () {
@@ -44,6 +49,9 @@ export default {
       }
       this.pageScrollY = offsetY
     })
+    // setTimeout(() => {
+    //   this.$refs.scrollview.scrollTo(0, this.momentScrollY, 1)
+    // }, 200)
   },
   computed: {
     ...mapGetters([
@@ -54,13 +62,17 @@ export default {
   data () {
     return {
       friendIdList: [],
-      pageScrollY: 0
+      pageScrollY: 0,
+      personMoment: {}
     }
   },
   methods: {
     ...mapActions([
       'setMomentScrollY'
-    ])
+    ]),
+    goBack () {
+      this.$router.go(-1)
+    }
   },
   beforeRouteLeave (to, from, next) {
     this.setMomentScrollY(this.pageScrollY)
@@ -81,7 +93,28 @@ export default {
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center 0;
-  i{
+  .return{
+    position: absolute;
+    left: 15px;
+    top: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    span{
+      width: 40px;
+      height: 40px;
+      background-image: url('../assets/images/more_light_btn.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      transform: rotate(180deg);
+    }
+    b{
+      color: #fff;
+      font-size: 32px;
+      font-weight: lighter;
+    }
+  }
+  .camera{
     position: fixed;
     top: 20px;
     right: 20px;
@@ -93,7 +126,7 @@ export default {
       height: 100%;
     }
   }
-    .img-container{
+  .img-container{
         width: 100%;
         /*此高度为计算后的黄金分割比*/
         height: 388px;

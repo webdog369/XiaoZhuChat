@@ -7,7 +7,8 @@ const  writeMoment = async (req,res) => {
       content:req.body.content,
       pics:req.body.pics,
       time:req.body.time,
-      likeUser:[]
+      likeUser:[],
+      competence:req.body.competence
   })
     res.send({
         msg:'发布成功'

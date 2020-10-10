@@ -44,6 +44,24 @@ const searchFriendList = async (req,res) =>{
         })
     }
 }
+const setRemakeName = async (req, res) => {
+    const data = await XZLC_User_Friend_Data.findOne({
+        userXZLCId:req.params.id
+    })
+    for (let value of data.userFriend){
+        if (value.userId === parseInt(req.body.friendId)){
+            value.remakeName = req.body.remakeName
+        }
+        const newData = await XZLC_User_Friend_Data.findOneAndUpdate({
+            userXZLCId:req.params.id
+        },{
+            userFriend:data.userFriend
+        })
+    }
+    res.send({
+        msg:'备注修改成功'
+    })
+}
 
 
 // 添加好友的方法
@@ -143,4 +161,4 @@ async function agree (res,myId,friendId,result){
         msg:'修改成功'
     })
 }
-module.exports = {addFriend, searchFriendList, agreeFriend}
+module.exports = {addFriend, searchFriendList, agreeFriend ,setRemakeName}

@@ -2,8 +2,8 @@
     <div class="mine">
       <div class="top">
         <div class="navbar">
-          <h2>我的</h2>
-          <span @click="goDetail">设置</span>
+          <h2 @click.stop="goMyMoment" >我的</h2>
+          <span @click.stop="goDetail">设置</span>
         </div>
         <div class="info">
           <div class="avatar">
@@ -18,6 +18,7 @@
           </div>
         </div>
       </div>
+      <div class="bottom"></div>
       <router-view></router-view>
     </div>
 </template>
@@ -65,12 +66,6 @@ export default {
       const file = e.target.files[0]
       this.baseUrl = window.URL.createObjectURL(file)
       window.URL.revokeObjectURL(file)
-      // const fm = new FormData()
-      // fm.append('newAvatar', file)
-      // fm.append('name', 'avatar')
-      // userAvatarUpData(fm).then(data => {
-      //   console.log(data)
-      // })
       const fm = new FormData()
       fm.append('newAvatar', file)
       fm.append('name', 'avatar')
@@ -86,62 +81,22 @@ export default {
         userXZLCId: this.currentUser.userXZLCId,
         userState: this.currentUser.userState
       })
-      // const fm = new FormData()
-      // fm.append('newAvatar', file)
-      // $.ajax({
-      //   url: 'http://127.0.0.1:3000/avatar',
-      //   type: 'PATCH',
-      //   contentType: false,
-      //   data: fm,
-      //   cache: false,
-      //   processData: false,
-      //   success: (data) => {
-      //     console.log(data)
-      //   }
-      // })
-      // const fr = new FileReader()
-      // fr.readAsArrayBuffer(file)
-      // fr.onload = () => {
-      //   const data = fr.result
-      //   const lenght = fr.result.byteLength
-      //   console.log(lenght)
-      //   userAvatarUpData({
-      //     newAvatar: data
-      //   }).then(data => {
-      //     console.log(data)
-      //   })
-      // }
-      // const url = new URL(this.baseUrl).href
-      // const fr = new FileReader()
-      // fr.readAsDataURL(file)
-      // fr.onload = () => {
-      //   console.log(fr.result)
-      //   this.baseUrl = fr.result
-      // }
-      // userUpData(this.currentUser.userXZLCId, {
-      //   key: 'userAvatar',
-      //   value: this.baseUrl,
-      //   type: type.replace('image/', '')
-      // })
-      // userAvatarUpData(window.URL.createObjectURL(file)).then(data => {
-      //   console.log(data)
-      // })
-      // console.log(fm)
-      // Vue.self.instance.post('/avatar', fm).then(data => {
-      //   console.log(data)
-      // }).catch(err => {
-      //   console.log(err)
-      // })
-      // userAvatarUpData({
-      //   newAvatar: data
-      // }).then(data => {
-      //   console.log(data)
-      // })
     },
     // 跳转到详情页
     goDetail () {
       this.$router.push({
         path: '/Mine/detail'
+      })
+    },
+    goMyMoment () {
+      this.$router.push({
+        path: '/Moments',
+        query: {
+          userId: this.currentUser.userXZLCId,
+          personMoment: true,
+          userName: this.currentUser.userName,
+          userAvatar: this.currentUser.userAvatar
+        }
       })
     },
     // 判断当前账号状态的方法

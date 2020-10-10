@@ -12,7 +12,7 @@ const {
     cb
 } = require('./api/userDataApi')
 
-const {addFriend, searchFriendList, agreeFriend} = require('./api/userFriendDataApi')
+const {addFriend, searchFriendList, agreeFriend, setRemakeName} = require('./api/userFriendDataApi')
 const {writeMoment, searchMoment,searchFriendMoment, like} = require('./api/userMomentApi')
 
 // 创建express实例
@@ -60,6 +60,9 @@ app.patch('/agreeFriend/:id',agreeFriend)
 
 // 查找好友列表
 app.get('/user/friend/list/:id',searchFriendList)
+
+// 设置好友备注
+app.post('/setRemakeName/:id',setRemakeName)
 
 // 发布朋友圈
 app.post('/writeMoment',writeMoment)

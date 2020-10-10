@@ -36,7 +36,7 @@ export default {
           }).then(data => {
             // 将查询到的信息进行判断,状态为已添加(0)的好友push到ContactPersonData中
             const items = data.data[0]
-            items.remakeName = key.userRemakeName
+            items.remakeName = key.remakeName
             this.ContactPersonData.push(items)
           })
           this.noFriend = false

@@ -12,21 +12,14 @@ import AddFriend from '../components/AddFriend'
 import WriteMoment from '../components/Moments/WriteMoment'
 import FriendDetail from '../components/FriendDetail'
 import ShowAvatar from '../components/ShowAvatar'
+import SetRemakeName from '../components/SetRemakeName'
 Vue.use(VueRouter)
 const routes = [
-  { path: '/', redirect: '/friendDetail/1000' },
+  { path: '/', redirect: '/Chat' },
   { path: '/Sign', component: Sign },
   { path: '/Chat', component: Chat, name: '消息' },
   { path: '/ContactPerson', component: ContactPerson, name: '联系人' },
-  {
-    path: '/Moments',
-    component: Moments,
-    name: '圈子',
-    hash: '#moments',
-    children: [
-      { path: 'writeMoment', component: WriteMoment }
-    ]
-  },
+  { path: '/Moments', component: Moments, name: '圈子' },
   {
     path: '/Mine',
     component: Mine,
@@ -39,7 +32,9 @@ const routes = [
   { path: '/user/:userId', component: ChatInterface, name: '聊天窗口' },
   { path: '/addFriend', component: AddFriend, name: '添加朋友' },
   { path: '/friendDetail/:userId', component: FriendDetail, name: '用户详情页' },
-  { path: '/showAvatar/:url', component: ShowAvatar, name: '头像展示' }
+  { path: '/showAvatar/:url', component: ShowAvatar, name: '头像展示' },
+  { path: '/setRemakeName/:id', component: SetRemakeName, name: '修改备注' },
+  { path: '/writeMoment', component: WriteMoment, name: '发布朋友圈' }
 ]
 
 const router = new VueRouter({

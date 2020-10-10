@@ -5,80 +5,129 @@
                  src="../../assets/images/back.png"
                  @click.stop="back"
             />
-            <p>发表</p>
+            <p @click.stop="sendMoment">发布</p>
         </div>
         <div class="bottom">
             <textarea class="content"
                       placeholder="这一刻的想法..."
+                      v-model="contentText"
             >
             </textarea>
-            <div class="images">
-                <img class="Img"
-                     ref="Img"
-                     src="https://c-ssl.duitang.com/uploads/item/202005/17/20200517204235_ohlfp.thumb.1000_0.jpg"
-                     alt=""
-                     v-for="(value,index) in Num"
-                     :key="index"
-                     @click.stop="delectItem(index)"
-                >
-                <p class="uploading" @click.stop="addImages" v-show="isShowUpLoading" ref="uploading"></p>
-            </div>
-            <div class="remind">
-                <div class="left">
-                    <img src="../../assets/images/remind.svg" alt="">
-                    <p>提醒谁看</p>
-                </div>
-                <img src="../../assets/images/right.svg" alt="">
-            </div>
-            <div class="allow">
+          <van-uploader
+            :after-read="afterRead"
+            :before-delete='beforeDelete'
+            v-model="imgFileList"
+            multiple :max-count="9"
+          />
+          <div class="allow" @click="showPopup">
                 <div class="left">
                     <img src="../../assets/images/allow.svg" alt="">
                     <p>谁可以看</p>
                 </div>
+                <span>{{popupList[currentSelect]}}</span>
                 <img src="../../assets/images/right.svg" alt="">
             </div>
         </div>
+      <van-popup
+        ref="popup"
+        v-model="show"
+        position="bottom"
+        :style="{ height: '280px'}"
+      >
+       <p
+         v-for="(value,index) in popupList"
+         :key="index"
+         :class="{'active':currentSelect === index}"
+         @click.stop="select(value,index)"
+       >{{value}}</p>
+      </van-popup>
     </div>
 </template>
 
 <script>
+import { userWriteMoment } from '../../api'
+import { mapGetters, mapActions } from 'vuex'
+import { formatTime } from '../../tools/tools'
+import Vue from 'vue'
+import { Popup, Uploader } from 'vant'
+Vue.use(Popup)
+Vue.use(Uploader)
 export default {
   name: 'WriteMoment',
+  computed: {
+    ...mapGetters([
+      'currentUser'
+    ])
+  },
   data () {
     return {
-      Num: 0,
+      imgFileList: [],
+      currentSelect: 0,
       isShowUpLoading: true,
-      List: []
+      List: [],
+      contentText: '',
+      show: false,
+      popupList: ['公开', '好友可见', '仅自己可见'],
+      pics: [],
+      picNum: 0
     }
   },
   methods: {
+    ...mapActions([
+      'setTips'
+    ]),
     back () {
-      history.back()
+      this.$router.go(-1)
     },
-    // 增加一个图片
-    addImages () {
-      console.log('增加一个')
-      if (this.Num >= 9) {
-        this.Num = 9
-      } else {
-        console.log(this.Num)
-        this.Num = this.Num + 1
-      }
-      if (this.Num === 9) {
-        this.isShowUpLoading = false
-      }
+    afterRead (data) {
+      // let length = 0
+      // const time = formatTime(new Date()).substr(0, 10)
+      const fm = new FormData()
+      fm.append('momentImages', data.file)
+      fm.append('fileName', new Date().getTime() + '')
+      // userSearchMoment(this.currentUser.userXZLCId).then(result => {
+      //   for (const value of result.result) {
+      //     const momentTime = value.time.substr(0, 10)
+      //     if (momentTime === time) {
+      //       length++
+      //     }
+      //   }
+      // this.picNum++
+      // 图片格式
+      // this.pics.push(`http://localhost:3000/moment_images/${this.currentUser.userXZLCId}/${time}/${length}/${this.picNum}`)
+      // })
     },
-    // 删除当前选中图片
-    delectItem (inedx) {
-      console.log('删除当前的这张', inedx)
-      this.$refs.Img[inedx].classList.add('active')
-      this.Num = this.$refs.Img.length - 1
-      console.log(this.Num)
-      if (inedx < 9) {
-        this.isShowUpLoading = true
-      } else if (inedx < 1) {
-        inedx = 1
+    beforeDelete (data, detail) {
+      console.log(data, detail)
+      this.pics.splice(detail.index, 1)
+      return true
+    },
+    showPopup (e) {
+      this.show = true
+    },
+    select (value, index) {
+      this.currentSelect = index
+      this.show = false
+    },
+    sendMoment () {
+      if (!this.contentText.length) {
+        this.setTips('文字内容不能为空')
+        return
       }
+      const time = formatTime(new Date())
+      const momentData = {
+        userXZLCId: this.currentUser.userXZLCId,
+        content: this.contentText,
+        pics: this.pics,
+        time: time,
+        likeUser: [],
+        competence: this.currentSelect
+      }
+      userWriteMoment(momentData).then(msg => {
+        // this.setTips(msg.)
+        console.log(msg)
+        this.$router.push({ path: '/Moments' })
+      })
     }
   },
   watch: {
@@ -94,9 +143,10 @@ export default {
      right: 0;
      bottom: 0;
      background: #ffffff;
+     z-index: 9999;
      .header{
          width: 100%;
-         height: 100px;
+         height: 80px;
          background: #eee;
          display: flex;
          justify-content: space-between;
@@ -107,15 +157,15 @@ export default {
              margin-left: 20px;
          }
          p{
-             width: 120px;
-             height: 60px;
+             width: 100px;
+             height: 50px;
              margin-right: 20px;
-             border-radius: 15px;
+             border-radius: 5px;
              background: #1082FF;
-             font-size: 26px;
+             font-size: 24px;
              color: #f6f6f6;
              text-align: center;
-             line-height:60px;
+             line-height:50px;
          }
      }
      .bottom{
@@ -139,59 +189,6 @@ export default {
                  color: #666 !important;
              }
          }
-         .images{
-             width: 100%;
-             background: #f3b6be;
-             display: flex;
-             justify-content: flex-start;
-             flex-wrap: wrap;
-             border-bottom: 1px solid #d0d0d0;
-             padding-bottom: 15px;
-             box-sizing: border-box;
-             .uploading{
-                 width: 215px;
-                 height: 215px;
-                 background: #dddddd;
-                 margin-top: 15px;
-                 margin-left: 15px;
-             }
-             .Img{
-                 display:block;
-                 width: 215px;
-                 height: 215px;
-                 background: #575757;
-                 margin-top: 15px;
-                 margin-left: 15px;
-                 &.active{
-                     display: none;
-                 }
-             }
-         }
-         .remind{
-             width: 100%;
-             height: 100px;
-             border-bottom: 1px solid #d0d0d0;
-             box-sizing: border-box;
-             display: flex;
-             justify-content: space-between;
-              .left{
-                  width: 220px;
-                  /*background: #f3b6be;*/
-                  display: flex;
-                  justify-content: space-between;
-                  img{
-                      width: 50px;
-                      height: 50px;
-                      margin-top: 25px;
-                      margin-left: 10px;
-                  }
-                  p{
-                      font-size: 32px;
-                      color:#575757;
-                      line-height: 100px;
-                  }
-              }
-         }
          .allow{
              width: 100%;
              height: 100px;
@@ -199,24 +196,73 @@ export default {
              box-sizing: border-box;
              display: flex;
              justify-content: space-between;
+             align-items: center;
              .left{
-                 width: 220px;
+                 flex: 1;
                  /*background: #f3b6be;*/
                  display: flex;
                  justify-content: space-between;
+                 align-items: center;
                  img{
-                     width: 50px;
-                     height: 50px;
-                     margin-top: 25px;
-                     margin-left: 10px;
+                     width: 35px;
+                     height: 35px;
+                     margin-right: 15px;
                  }
                  p{
-                     font-size: 32px;
+                     flex: 1;
+                     font-size: 28px;
                      color:#575757;
                      line-height: 100px;
                  }
              }
+             span{
+               font-size: 28px;
+               color: #666;
+               margin-right: 15px;
+             }
+             img{
+               width: 35px;
+               height: 35px;
+             }
          }
      }
+     .van-popup{
+      p{
+        text-align: center;
+        line-height: 90px;
+        border-bottom: 1px solid #eee;
+        &.active{
+          background-image: url('../../assets/images/select.png');
+          background-size: 5%;
+          background-repeat: no-repeat;
+          background-position: 95% center;
+        }
+      }
+     }
  }
+</style>
+<style>
+  /*预览图片样式*/
+  .van-uploader__preview .van-image {
+    width: 167px;
+    height: 167px;
+  }
+  /*预览图片删除按钮样式*/
+  .van-uploader__preview-delete{
+    width: 50px;
+    height: 50px;
+  }
+  /*预览图片索引样式*/
+  .van-image-preview__index{
+    font-size: 32px;
+  }
+  /*预览图片索引样式*/
+  .van-icon{
+    font-size: 55px;
+  }
+  /*添加图片按钮样式*/
+  .van-uploader__upload{
+    width: 167px;
+    height: 167px;
+  }
 </style>
