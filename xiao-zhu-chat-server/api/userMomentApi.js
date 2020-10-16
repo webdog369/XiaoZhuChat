@@ -1,4 +1,7 @@
 const {XZLC_User_Moment_Data} = require('../user-data-db/xzlc_collections/UserMoment')
+const multer = require('multer')
+const fs = require('fs')
+const path = require('path')
 
 // 发布朋友圈接口
 const  writeMoment = async (req,res) => {
@@ -79,4 +82,39 @@ const like = async (req, res) => {
     })
 }
 
-module.exports = {writeMoment, searchMoment, searchFriendMoment, like}
+// 保存朋友圈的图片
+// 1.详细配置文件写入目录以及文件名
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        // 解析相对路径查看是否存在该用户的文件夹 若不存在 就创建一个 若存在就将图片存储到文件夹下
+        const pathUrl = path.resolve(`./public/moment_images/${req.params.id}`)
+        fs.access(pathUrl,haveDir =>{
+            if (haveDir){
+               fs.mkdir(pathUrl,data => {
+                   cb(null, pathUrl);
+               })
+            }else{
+                cb(null, pathUrl);
+            }
+        })
+    },
+    filename: function (req, file, cb) {
+        const extName = file.mimetype.replace('image/', '')
+        cb(null, `${req.params.name}.${extName}`);
+    }
+});
+
+// 2.将配置好的信息创给multer
+let upload = multer({ storage: storage })
+
+// 3.调用multer的single方法
+let momentMulters =  upload.fields([{name:'momentImages',maxCount:9}])
+
+// 4.处理返回数据
+let momentCb  = async function(req, res){
+    res.send({
+        msg:'朋友圈图片存储成功'
+    });
+}
+
+module.exports = {writeMoment, searchMoment, searchFriendMoment, like, momentMulters, momentCb}

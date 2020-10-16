@@ -62,6 +62,10 @@ export default {
     },
     scrollEnd (fn) {
       this.iscroll.on('scrollEnd', fn)
+    },
+    destroy () {
+      this.iscroll.destroy()
+      this.iscroll = null
     }
   }
 }

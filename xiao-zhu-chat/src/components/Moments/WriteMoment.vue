@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { userWriteMoment } from '../../api'
+import { userWriteMoment, userMomentPics } from '../../api'
 import { mapGetters, mapActions } from 'vuex'
 import { formatTime } from '../../tools/tools'
 import Vue from 'vue'
@@ -62,6 +62,7 @@ export default {
   data () {
     return {
       imgFileList: [],
+      imgFmList: [],
       currentSelect: 0,
       isShowUpLoading: true,
       List: [],
@@ -80,22 +81,16 @@ export default {
       this.$router.go(-1)
     },
     afterRead (data) {
-      // let length = 0
-      // const time = formatTime(new Date()).substr(0, 10)
       const fm = new FormData()
+      const time = new Date().getTime()
+      const extName = data.file.type.replace('image/', '')
       fm.append('momentImages', data.file)
-      fm.append('fileName', new Date().getTime() + '')
-      // userSearchMoment(this.currentUser.userXZLCId).then(result => {
-      //   for (const value of result.result) {
-      //     const momentTime = value.time.substr(0, 10)
-      //     if (momentTime === time) {
-      //       length++
-      //     }
-      //   }
-      // this.picNum++
-      // 图片格式
-      // this.pics.push(`http://localhost:3000/moment_images/${this.currentUser.userXZLCId}/${time}/${length}/${this.picNum}`)
+      fm.append('fileName', time + '')
+      this.imgFmList.push(fm)
+      // userMomentPics(time, fm).catch(err => {
+      //   console.log(err)
       // })
+      this.pics.push(`http://localhost:3000/moment_images/${this.currentUser.userXZLCId}/${time}.${extName}`)
     },
     beforeDelete (data, detail) {
       console.log(data, detail)
@@ -110,6 +105,13 @@ export default {
       this.show = false
     },
     sendMoment () {
+      // 遍历图片文件列表 取出图片名
+      for (const value of this.imgFmList) {
+        const fileName = value.get('fileName')
+        userMomentPics(this.currentUser.userXZLCId, fileName, value).catch(err => {
+          console.log(err)
+        })
+      }
       if (!this.contentText.length) {
         this.setTips('文字内容不能为空')
         return
@@ -124,7 +126,6 @@ export default {
         competence: this.currentSelect
       }
       userWriteMoment(momentData).then(msg => {
-        // this.setTips(msg.)
         console.log(msg)
         this.$router.push({ path: '/Moments' })
       })

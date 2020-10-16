@@ -20,6 +20,8 @@ export const setRemakeName = (id, data) => Network.post(`/setRemakeName/${id}`, 
 export const userFriendList = (id) => Network.get(`/user/friend/list/${id}`)
 // 发布朋友圈
 export const userWriteMoment = (data) => Network.post('/writeMoment', data)
+
+export const userMomentPics = (id, name, data) => Network.post(`/momentPics/${id}/${name}`, data)
 // 查询某人朋友圈
 export const userSearchMoment = (id) => Network.get(`/searchMoment/${id}`)
 // 查询所有好友朋友圈

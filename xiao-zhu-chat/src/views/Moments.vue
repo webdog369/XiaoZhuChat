@@ -53,6 +53,9 @@ export default {
     //   this.$refs.scrollview.scrollTo(0, this.momentScrollY, 1)
     // }, 200)
   },
+  beforeDestroy () {
+    this.$refs.scrollview.destroy()
+  },
   computed: {
     ...mapGetters([
       'currentUser',

@@ -27,10 +27,11 @@
                     <div class="review">
                         <p>{{value.content}}</p>
                         <div class="grid">
-                            <img
-                              v-for="(v,i) in value.pics"
-                              :key="i"
-                              :src="v">
+                          <div class="pic"
+                               v-for="(v,i) in value.pics"
+                               :key="i"
+                               @click.stop="showPic(v)"
+                          > <img :src="v"></div>
                         </div>
                     </div>
                     <div class="personal-bottom">
@@ -158,6 +159,9 @@ export default {
     }
   },
   methods: {
+    showPic (url) {
+      this.$router.push({ path: `/showAvatar/${this.currentUser.userXZLCId}`, query: { src: url } })
+    },
     likeIt (id, index) {
       // 切换点赞图标状态
       this.userMoments[index].like = !this.userMoments[index].like
@@ -275,12 +279,20 @@ export default {
                         align-items: flex-start;
                         flex-wrap: wrap;
                         align-content: stretch;
-                        img{
+                        .pic{
+                            position: relative;
                             display: inline-block;
                             width: 190px;
                             height:190px;
                             margin-top: 15px;
                             margin-right: 10px;
+                            overflow: hidden;
+                            img{
+                              position: absolute;
+                              left: 50%;
+                              transform: translateX(-50%);
+                              height: 100%;
+                            }
                         }
                     }
                 }

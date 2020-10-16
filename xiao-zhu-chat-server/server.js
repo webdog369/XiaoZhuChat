@@ -13,7 +13,7 @@ const {
 } = require('./api/userDataApi')
 
 const {addFriend, searchFriendList, agreeFriend, setRemakeName} = require('./api/userFriendDataApi')
-const {writeMoment, searchMoment,searchFriendMoment, like} = require('./api/userMomentApi')
+const {writeMoment, searchMoment,searchFriendMoment, like, momentMulters, momentCb} = require('./api/userMomentApi')
 
 // 创建express实例
 const app = express()
@@ -41,6 +41,7 @@ app.post('/user/SignIn',signIn)
 // 查询所有用户数据
 app.get('/user/search/all',userSearchAll)
 
+// 查找单个用户
 app.post('/user/search/one',userSearchOne)
 
 // 删除所有用户数据
@@ -66,6 +67,9 @@ app.post('/setRemakeName/:id',setRemakeName)
 
 // 发布朋友圈
 app.post('/writeMoment',writeMoment)
+
+// 保存朋友圈图片
+app.post('/momentPics/:id/:name',momentMulters,momentCb);
 
 // 查找单个用户朋友圈
 app.get('/searchMoment/:id',searchMoment)
